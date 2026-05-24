@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Explorer — Space Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Wormhole Transition -->
+    <div id="wormhole-transition" class="hidden">
+        <!-- Phase 1: Shuttle flying to card -->
+        <div id="shuttle-approach" class="shuttle-approach">
+            <div class="shuttle-craft">
+                <div class="craft-body"></div>
+                <div class="craft-cockpit"></div>
+                <div class="craft-wing-l"></div>
+                <div class="craft-wing-r"></div>
+                <div class="craft-engine"></div>
+                <div class="craft-trail"></div>
+            </div>
+        </div>
+        
+        <!-- Phase 2: Quantum Realm Effect -->
+        <div id="quantum-realm" class="quantum-realm hidden">
+            <div class="quantum-void"></div>
+            <div class="quantum-layer layer-1"></div>
+            <div class="quantum-layer layer-2"></div>
+            <div class="quantum-layer layer-3"></div>
+            <div class="quantum-layer layer-4"></div>
+            <div class="quantum-particles"></div>
+            <div class="quantum-rings">
+                <div class="q-ring r1"></div>
+                <div class="q-ring r2"></div>
+                <div class="q-ring r3"></div>
+                <div class="q-ring r4"></div>
+                <div class="q-ring r5"></div>
+            </div>
+            <div class="quantum-flash"></div>
+            <div class="quantum-traveler">
+                <div class="traveler-glow"></div>
+                <div class="traveler-core"></div>
+            </div>
+            <div class="warp-speed-indicator" id="warp-speed">WARP 9.9</div>
+            <div class="warp-distance-indicator" id="warp-distance">4.37 LIGHT-YEARS REMAINING</div>
+            <div class="quantum-text" id="quantum-text">INITIATING WARP DRIVE</div>
+        </div>
+    </div>
+
+    <!-- Landing Screen -->
+    <div id="landing-screen">
+        <div id="landing-stars"></div>
+        <div class="landing-content">
+            <h1 class="landing-title">STELLAR <span>EXPLORER</span></h1>
+            <p class="landing-subtitle">Choose your destination</p>
+            <div class="system-cards">
+                <div class="system-card" id="card-solar-system">
+                    <div class="system-card-image solar-system-preview">
+                        <div class="preview-sun"></div>
+                        <div class="preview-orbit orbit-1"></div>
+                        <div class="preview-orbit orbit-2"></div>
+                        <div class="preview-orbit orbit-3"></div>
+                        <div class="preview-orbit orbit-4"></div>
+                        <div class="preview-planet planet-1"></div>
+                        <div class="preview-planet planet-2"></div>
+                        <div class="preview-planet planet-3"></div>
+                        <div class="preview-planet planet-4"></div>
+                    </div>
+                    <div class="system-card-info">
+                        <h2>Our Solar System</h2>
+                        <p>8 planets · 200+ moons · Asteroid & Kuiper belts</p>
+                        <span class="system-distance">Home System</span>
+                    </div>
+                    <div class="system-card-btn">EXPLORE →</div>
+                </div>
+                <div class="system-card" id="card-alpha-centauri">
+                    <div class="system-card-image alpha-centauri-preview">
+                        <div class="preview-star star-a"></div>
+                        <div class="preview-star star-b"></div>
+                        <div class="preview-star star-proxima"></div>
+                        <div class="preview-orbit-ac orbit-ab"></div>
+                        <div class="preview-planet-ac proxima-b"></div>
+                    </div>
+                    <div class="system-card-info">
+                        <h2>Alpha Centauri</h2>
+                        <p>3 stars · Proxima b exoplanet · Binary system</p>
+                        <span class="system-distance">4.37 light-years away</span>
+                    </div>
+                    <div class="system-card-btn">EXPLORE →</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ambient layers -->
+    <div id="stars-container"></div>
+    <div class="grid-overlay"></div>
+    <div class="scanline"></div>
+
+    <!-- HUD corners -->
+    <div class="hud-corner hud-tl"><svg viewBox="0 0 80 80"><path d="M0 30 L0 0 L30 0" fill="none" stroke="rgba(80,120,180,0.4)" stroke-width="1"/></svg></div>
+    <div class="hud-corner hud-tr"><svg viewBox="0 0 80 80"><path d="M0 30 L0 0 L30 0" fill="none" stroke="rgba(80,120,180,0.4)" stroke-width="1"/></svg></div>
+    <div class="hud-corner hud-bl"><svg viewBox="0 0 80 80"><path d="M0 30 L0 0 L30 0" fill="none" stroke="rgba(80,120,180,0.4)" stroke-width="1"/></svg></div>
+    <div class="hud-corner hud-br"><svg viewBox="0 0 80 80"><path d="M0 30 L0 0 L30 0" fill="none" stroke="rgba(80,120,180,0.4)" stroke-width="1"/></svg></div>
+
+    <!-- Alpha Centauri System View -->
+    <div id="alpha-centauri-system" class="hidden">
+        <div id="ac-stars-container"></div>
+        <div class="grid-overlay"></div>
+        
+        <button class="btn-back btn-back-landing" id="btn-back-landing-ac">
+            <span class="btn-icon">‹</span> Back to Menu
+        </button>
+
+        <div id="ac-system-viewport">
+            <div id="ac-system-container">
+                <div class="ac-star star-alpha-a" id="star-alpha-a">
+                    <div class="star-glow glow-a"></div>
+                    <div class="star-surface surface-a"></div>
+                </div>
+                <div class="ac-star star-alpha-b" id="star-alpha-b">
+                    <div class="star-glow glow-b"></div>
+                    <div class="star-surface surface-b"></div>
+                </div>
+                <div class="ac-star star-proxima" id="star-proxima">
+                    <div class="star-glow glow-proxima"></div>
+                    <div class="star-surface surface-proxima"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item"><span class="status-dot"></span>Alpha Centauri System</div>
+            <div class="status-item" id="ac-clock"></div>
+        </div>
+
+        <div class="pan-hint" id="ac-pan-hint">Scroll to zoom · Drag to pan</div>
+
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="ac-zoom-in" title="Zoom In">+</button>
+            <button class="zoom-btn zoom-reset" id="ac-zoom-reset" title="Reset View">RST</button>
+            <button class="zoom-btn" id="ac-zoom-out" title="Zoom Out">−</button>
+        </div>
+    </div>
+
+    <!-- Alpha Centauri Star Detail View -->
+    <div id="ac-star-detail" class="hidden">
+        <div id="ac-detail-stars"></div>
+        <button class="btn-back" id="btn-back-ac-system">
+            <span class="btn-icon">‹</span> Return to System
+        </button>
+        <div class="detail-layout">
+            <div class="planet-display" id="ac-star-display-area">
+                <div class="planet-zoom" id="ac-star-zoom"></div>
+                <div class="planet-name-label" id="ac-star-name-label"></div>
+            </div>
+            <div class="info-panel" id="ac-star-info-panel">
+                <div class="info-header">
+                    <h2 class="info-title" id="ac-star-info-title"></h2>
+                    <div class="info-subtitle" id="ac-star-info-subtitle"></div>
+                    <div class="info-classification" id="ac-star-classification"></div>
+                </div>
+                <div class="facts-section-title">Key Data</div>
+                <div class="facts-list" id="ac-star-facts-list"></div>
+                <div class="detail-actions" id="ac-star-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proxima b Detail View -->
+    <div id="proxima-b-detail" class="hidden">
+        <div id="proxima-b-stars"></div>
+        <button class="btn-back" id="btn-back-from-proxima">
+            <span class="btn-icon">‹</span> Back to Proxima Centauri
+        </button>
+        <div class="detail-layout">
+            <div class="planet-display" id="proxima-b-display-area">
+                <div class="planet-zoom" id="proxima-b-zoom"></div>
+                <div class="planet-name-label">PROXIMA CENTAURI B</div>
+            </div>
+            <div class="info-panel">
+                <div class="info-header">
+                    <h2 class="info-title">Proxima Centauri b</h2>
+                    <div class="info-subtitle">The Closest Exoplanet</div>
+                    <div class="info-classification">
+                        <span class="info-tag">Exoplanet</span>
+                        <span class="info-tag">Habitable Zone</span>
+                        <span class="info-tag">Rocky World</span>
+                    </div>
+                </div>
+                <div class="facts-section-title">Key Data</div>
+                <div class="facts-list" id="proxima-b-facts-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Solar System View -->
+    <div id="solar-system" class="hidden">
+        <div id="system-viewport">
+            <div id="system-container">
+                <div class="sun" id="sun">
+                    <div class="sun-corona"></div>
+                    <div class="sun-surface"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-back btn-back-landing" id="btn-back-landing-solar">
+            <span class="btn-icon">‹</span> Back to Menu
+        </button>
+
+        <div class="status-bar">
+            <div class="status-item"><span class="status-dot"></span>Systems Nominal</div>
+            <div class="status-item" id="clock"></div>
+        </div>
+
+        <div class="pan-hint" id="pan-hint">Scroll to zoom · Drag to pan</div>
+
+        <button class="explore-asteroids-btn" id="btn-explore-asteroids">
+            <span class="btn-asteroid-icon">☄</span> Explore Asteroids
+        </button>
+
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="zoom-in" title="Zoom In">+</button>
+            <button class="zoom-btn zoom-reset" id="zoom-reset" title="Reset View">RST</button>
+            <button class="zoom-btn" id="zoom-out" title="Zoom Out">−</button>
+        </div>
+    </div>
+
+    <!-- Planet Detail View -->
+    <div id="planet-detail" class="hidden">
+        <div id="detail-stars"></div>
+        <button class="btn-back" id="btn-back-system">
+            <span class="btn-icon">‹</span> Return to System
+        </button>
+        <div class="detail-layout">
+            <div class="planet-display" id="planet-display-area">
+                <div class="planet-zoom" id="planet-zoom">
+                    <div class="planet-shadow"></div>
+                    <div class="planet-highlight"></div>
+                </div>
+                <div class="planet-name-label" id="planet-name-label"></div>
+            </div>
+            <div class="info-panel" id="info-panel">
+                <div class="info-header">
+                    <h2 class="info-title" id="info-title"></h2>
+                    <div class="info-subtitle" id="info-subtitle"></div>
+                    <div class="info-classification" id="info-classification"></div>
+                </div>
+                <div class="facts-section-title">Key Intelligence</div>
+                <div class="facts-list" id="facts-list"></div>
+                <div class="detail-actions">
+                    <button class="btn-action" id="btn-show-moons">
+                        <span class="btn-action-icon">◑</span> Explore Moons
+                    </button>
+                    <button class="btn-action btn-action-alt" id="btn-see-history">
+                        <span class="btn-action-icon">◷</span> Mission History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Moon Viewer -->
+    <div id="moon-viewer" class="hidden">
+        <div id="moon-stars"></div>
+        <button class="btn-back" id="btn-exit-moons">
+            <span class="btn-icon">‹</span> Exit Moons
+        </button>
+        <div class="detail-layout">
+            <div class="planet-display" id="moon-display-area">
+                <div class="moon-zoom" id="moon-zoom">
+                    <div class="planet-shadow"></div>
+                    <div class="planet-highlight"></div>
+                </div>
+                <div class="planet-name-label" id="moon-name-label"></div>
+            </div>
+            <div class="info-panel" id="moon-info-panel">
+                <div class="info-header">
+                    <h2 class="info-title" id="moon-info-title"></h2>
+                    <div class="info-subtitle" id="moon-info-subtitle"></div>
+                </div>
+                <div class="facts-section-title">Lunar Intelligence</div>
+                <div class="facts-list" id="moon-facts-list"></div>
+                <div class="moon-nav">
+                    <button class="btn-nav" id="btn-moon-prev"><span>‹</span> Previous</button>
+                    <span class="moon-counter" id="moon-counter"></span>
+                    <button class="btn-nav" id="btn-moon-next">Next <span>›</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Viewer -->
+    <div id="history-viewer" class="hidden">
+        <div id="history-stars"></div>
+        <button class="btn-back" id="btn-exit-history">
+            <span class="btn-icon">‹</span> Exit History
+        </button>
+        <div class="history-layout">
+            <div class="history-planet-icon" id="history-planet-icon">
+                <div class="planet-shadow"></div>
+            </div>
+            <div class="history-content">
+                <h2 class="history-title" id="history-title"></h2>
+                <div class="history-slide" id="history-slide"></div>
+                <div class="history-nav">
+                    <button class="btn-nav" id="btn-history-prev"><span>‹</span> Previous</button>
+                    <span class="history-counter" id="history-counter"></span>
+                    <button class="btn-nav" id="btn-history-next">Next <span>›</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asteroid Explorer -->
+    <div id="asteroid-viewer" class="hidden">
+        <div id="asteroid-stars"></div>
+        <button class="btn-back" id="btn-exit-asteroids">
+            <span class="btn-icon">‹</span> Exit Asteroids
+        </button>
+        <div class="detail-layout">
+            <div class="planet-display" id="asteroid-display-area">
+                <div class="asteroid-zoom" id="asteroid-zoom"></div>
+                <div class="planet-name-label" id="asteroid-name-label"></div>
+            </div>
+            <div class="info-panel" id="asteroid-info-panel">
+                <div class="info-header">
+                    <h2 class="info-title" id="asteroid-info-title"></h2>
+                    <div class="info-subtitle" id="asteroid-info-subtitle"></div>
+                    <div class="info-classification" id="asteroid-classification"></div>
+                </div>
+                <div class="facts-section-title">Key Data</div>
+                <div class="facts-list" id="asteroid-facts-list"></div>
+                <div class="moon-nav">
+                    <button class="btn-nav" id="btn-asteroid-prev"><span>‹</span> Previous</button>
+                    <span class="moon-counter" id="asteroid-counter"></span>
+                    <button class="btn-nav" id="btn-asteroid-next">Next <span>›</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No moons modal -->
+    <div id="no-moons-modal" class="hidden">
+        <div class="modal-box">
+            <p id="no-moons-text"></p>
+            <button class="btn-action" id="btn-close-modal">Acknowledged</button>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

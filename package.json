@@ -1,0 +1,11 @@
+{
+  "name": "solar-system-explorer",
+  "version": "1.0.0",
+  "description": "Interactive Solar System and Alpha Centauri visualization",
+  "scripts": {
+    "start": "npx serve -s . -l ${PORT:-3000}"
+  },
+  "keywords": ["solar-system", "space", "visualization", "astronomy"],
+  "author": "Aryan Bansal",
+  "license": "MIT"
+}
