@@ -1088,6 +1088,10 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         if (!document.getElementById('no-moons-modal').classList.contains('hidden')) {
             document.getElementById('no-moons-modal').classList.add('hidden');
+        } else if (!document.getElementById('trappist-planet-detail').classList.contains('hidden')) {
+            document.getElementById('btn-back-trappist-system').click();
+        } else if (!document.getElementById('trappist-system').classList.contains('hidden')) {
+            document.getElementById('btn-back-landing-trappist').click();
         } else if (!document.getElementById('proxima-b-detail').classList.contains('hidden')) {
             document.getElementById('btn-back-from-proxima').click();
         } else if (!document.getElementById('ac-star-detail').classList.contains('hidden')) {
@@ -1107,7 +1111,9 @@ document.addEventListener('keydown', (e) => {
         }
     }
     if (e.key === 'ArrowLeft') {
-        if (!document.getElementById('asteroid-viewer').classList.contains('hidden')) {
+        if (!document.getElementById('trappist-planet-detail').classList.contains('hidden') && viewingTarget === 'trappist-planet') {
+            document.getElementById('btn-trappist-prev').click();
+        } else if (!document.getElementById('asteroid-viewer').classList.contains('hidden')) {
             document.getElementById('btn-asteroid-prev').click();
         } else if (!document.getElementById('moon-viewer').classList.contains('hidden')) {
             document.getElementById('btn-moon-prev').click();
@@ -1116,7 +1122,9 @@ document.addEventListener('keydown', (e) => {
         }
     }
     if (e.key === 'ArrowRight') {
-        if (!document.getElementById('asteroid-viewer').classList.contains('hidden')) {
+        if (!document.getElementById('trappist-planet-detail').classList.contains('hidden') && viewingTarget === 'trappist-planet') {
+            document.getElementById('btn-trappist-next').click();
+        } else if (!document.getElementById('asteroid-viewer').classList.contains('hidden')) {
             document.getElementById('btn-asteroid-next').click();
         } else if (!document.getElementById('moon-viewer').classList.contains('hidden')) {
             document.getElementById('btn-moon-next').click();
@@ -1324,7 +1332,14 @@ function startWormholeTransition(destination, destinationName) {
     const shuttle = shuttleApproach.querySelector('.shuttle-craft');
     
     // Get the clicked card's position
-    const cardId = destination === 'solar-system' ? 'card-solar-system' : 'card-alpha-centauri';
+    let cardId;
+    if (destination === 'solar-system') {
+        cardId = 'card-solar-system';
+    } else if (destination === 'alpha-centauri') {
+        cardId = 'card-alpha-centauri';
+    } else if (destination === 'trappist') {
+        cardId = 'card-trappist';
+    }
     const card = document.getElementById(cardId);
     const cardRect = card.getBoundingClientRect();
     const cardCenterX = cardRect.left + cardRect.width / 2;
@@ -1431,7 +1446,14 @@ function startQuantumRealmPhase(destination, destinationName, card) {
     const warpDistance = document.getElementById('warp-distance');
     
     // Determine distance based on destination
-    const totalDistance = destination === 'alpha-centauri' ? 4.37 : 0; // light-years
+    let totalDistance;
+    if (destination === 'alpha-centauri') {
+        totalDistance = 4.37; // light-years
+    } else if (destination === 'trappist') {
+        totalDistance = 40.7; // light-years
+    } else {
+        totalDistance = 0; // solar system
+    }
     
     // NOW hide landing screen and show black background (after shuttle has entered the card)
     document.getElementById('landing-screen').classList.add('hidden');
@@ -1539,6 +1561,9 @@ function startQuantumRealmPhase(destination, destinationName, card) {
         } else if (destination === 'alpha-centauri') {
             document.getElementById('alpha-centauri-system').classList.remove('hidden');
             buildAlphaCentauriSystem();
+        } else if (destination === 'trappist') {
+            document.getElementById('trappist-system').classList.remove('hidden');
+            buildTrappistSystem();
         }
     }, 5000);
 }
@@ -2164,3 +2189,395 @@ document.getElementById('btn-back-from-proxima').addEventListener('click', () =>
 
 // Initialize landing screen
 initLandingScreen();
+
+
+// ===== TRAPPIST-1 SYSTEM =====
+let trappistPanX = 0, trappistPanY = 0, trappistZoomLevel = 1;
+let trappistIsDragging = false, trappistDragStartX = 0, trappistDragStartY = 0, trappistPanStartX = 0, trappistPanStartY = 0;
+let trappistVelocityX = 0, trappistVelocityY = 0;
+let trappistLastMoveX = 0, trappistLastMoveY = 0, trappistLastMoveTime = 0;
+let trappistDidDrag = false;
+let trappistMomentumId = null;
+let trappistCenterX = 0, trappistCenterY = 0;
+let trappistBuilt = false;
+let trappistPlanetWrappers = [];
+let trappistPlanetAngles = [];
+let trappistAnimationId = null;
+
+function applyTrappistTransform() {
+    const container = document.getElementById('trappist-system-container');
+    container.style.transform = `translate(${trappistPanX}px, ${trappistPanY}px) scale(${trappistZoomLevel})`;
+}
+
+function startTrappistMomentum() {
+    if (trappistMomentumId) cancelAnimationFrame(trappistMomentumId);
+    
+    function animate() {
+        if (Math.abs(trappistVelocityX) < 0.1 && Math.abs(trappistVelocityY) < 0.1) {
+            trappistVelocityX = 0; trappistVelocityY = 0;
+            return;
+        }
+        trappistPanX += trappistVelocityX;
+        trappistPanY += trappistVelocityY;
+        trappistVelocityX *= FRICTION;
+        trappistVelocityY *= FRICTION;
+        applyTrappistTransform();
+        trappistMomentumId = requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+function initTrappistPanZoom() {
+    const viewport = document.getElementById('trappist-system-viewport');
+
+    viewport.addEventListener('mousedown', (e) => {
+        if (trappistMomentumId) cancelAnimationFrame(trappistMomentumId);
+        trappistIsDragging = true;
+        trappistDidDrag = false;
+        trappistDragStartX = e.clientX;
+        trappistDragStartY = e.clientY;
+        trappistPanStartX = trappistPanX;
+        trappistPanStartY = trappistPanY;
+        trappistLastMoveX = e.clientX;
+        trappistLastMoveY = e.clientY;
+        trappistLastMoveTime = Date.now();
+        trappistVelocityX = 0; trappistVelocityY = 0;
+        viewport.classList.add('dragging');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!trappistIsDragging) return;
+        const dx = e.clientX - trappistDragStartX;
+        const dy = e.clientY - trappistDragStartY;
+        if (Math.abs(dx) > 2 || Math.abs(dy) > 2) trappistDidDrag = true;
+        
+        trappistPanX = trappistPanStartX + dx;
+        trappistPanY = trappistPanStartY + dy;
+        
+        const now = Date.now();
+        const dt = now - trappistLastMoveTime;
+        if (dt > 0) {
+            trappistVelocityX = (e.clientX - trappistLastMoveX) * VELOCITY_SCALE;
+            trappistVelocityY = (e.clientY - trappistLastMoveY) * VELOCITY_SCALE;
+        }
+        trappistLastMoveX = e.clientX;
+        trappistLastMoveY = e.clientY;
+        trappistLastMoveTime = now;
+        
+        applyTrappistTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (trappistIsDragging && trappistDidDrag) startTrappistMomentum();
+        trappistIsDragging = false;
+        const viewport = document.getElementById('trappist-system-viewport');
+        if (viewport) viewport.classList.remove('dragging');
+    });
+
+    viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = viewport.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left - rect.width / 2;
+        const mouseY = e.clientY - rect.top - rect.height / 2;
+        
+        const oldZoom = trappistZoomLevel;
+        const delta = e.deltaY > 0 ? 0.9 : 1.12;
+        trappistZoomLevel = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, trappistZoomLevel * delta));
+        
+        const zoomRatio = trappistZoomLevel / oldZoom;
+        trappistPanX = mouseX - (mouseX - trappistPanX) * zoomRatio;
+        trappistPanY = mouseY - (mouseY - trappistPanY) * zoomRatio;
+        
+        applyTrappistTransform();
+        const hint = document.getElementById('trappist-pan-hint');
+        if (hint) hint.style.opacity = '0';
+    }, { passive: false });
+
+    // Zoom buttons
+    document.getElementById('trappist-zoom-in').addEventListener('click', () => {
+        trappistZoomLevel = Math.min(MAX_ZOOM, trappistZoomLevel * 1.3);
+        applyTrappistTransform();
+    });
+    document.getElementById('trappist-zoom-out').addEventListener('click', () => {
+        trappistZoomLevel = Math.max(MIN_ZOOM, trappistZoomLevel * 0.7);
+        applyTrappistTransform();
+    });
+    document.getElementById('trappist-zoom-reset').addEventListener('click', () => {
+        if (trappistMomentumId) cancelAnimationFrame(trappistMomentumId);
+        trappistPanX = 0; trappistPanY = 0; trappistZoomLevel = 1;
+        trappistVelocityX = 0; trappistVelocityY = 0;
+        applyTrappistTransform();
+    });
+}
+
+function buildTrappistSystem() {
+    if (trappistBuilt) return;
+    trappistBuilt = true;
+
+    const container = document.getElementById('trappist-system-container');
+    const viewport = document.getElementById('trappist-system-viewport');
+    
+    trappistCenterX = viewport.offsetWidth / 2;
+    trappistCenterY = viewport.offsetHeight / 2;
+
+    // Create stars background for TRAPPIST-1 system
+    const trappistStarsContainer = document.getElementById('trappist-stars-container');
+    for (let i = 0; i < 600; i++) {
+        const star = document.createElement('div');
+        const isBright = Math.random() > 0.94;
+        star.className = isBright ? 'star star-bright' : 'star';
+        const size = isBright ? (Math.random() * 2.5 + 1.5) : (Math.random() * 1.5 + 0.3);
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.setProperty('--twinkle-duration', (Math.random() * 5 + 2) + 's');
+        star.style.setProperty('--twinkle-min', (Math.random() * 0.15 + 0.05).toString());
+        star.style.setProperty('--twinkle-max', (Math.random() * 0.4 + 0.55).toString());
+        star.style.animationDelay = (Math.random() * 8) + 's';
+        trappistStarsContainer.appendChild(star);
+    }
+
+    // Position the TRAPPIST-1 star
+    const trappistStar = document.getElementById('trappist-star');
+    trappistStar.style.left = trappistCenterX + 'px';
+    trappistStar.style.top = trappistCenterY + 'px';
+    
+    // Make star clickable
+    trappistStar.addEventListener('click', (e) => {
+        if (trappistDidDrag) return;
+        e.stopPropagation();
+        openTrappistStarDetail();
+    });
+
+    // Create orbits and planets
+    trappistPlanetWrappers = [];
+    TRAPPIST_1_PLANETS.forEach((planet, index) => {
+        // Initialize angle
+        if (trappistPlanetAngles[index] === undefined) {
+            trappistPlanetAngles[index] = (index / TRAPPIST_1_PLANETS.length) * Math.PI * 2;
+        }
+
+        // Create orbit
+        const orbit = document.createElement('div');
+        orbit.className = 'trappist-orbit';
+        orbit.style.width = planet.orbitRadius * 2 + 'px';
+        orbit.style.height = planet.orbitRadius * 2 + 'px';
+        orbit.style.left = trappistCenterX + 'px';
+        orbit.style.top = trappistCenterY + 'px';
+        container.appendChild(orbit);
+
+        // Create planet wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'trappist-planet-wrapper';
+
+        // Create planet
+        const planetEl = document.createElement('div');
+        planetEl.className = 'trappist-planet';
+        planetEl.style.width = planet.size + 'px';
+        planetEl.style.height = planet.size + 'px';
+        planetEl.style.background = planet.gradient;
+        planetEl.style.boxShadow = `0 0 ${planet.size * 0.5}px ${planet.glow}, inset -${planet.size * 0.15}px -${planet.size * 0.1}px ${planet.size * 0.3}px rgba(0,0,0,0.5)`;
+
+        planetEl.addEventListener('click', (e) => {
+            if (trappistDidDrag) return;
+            e.stopPropagation();
+            openTrappistPlanetDetail(index);
+        });
+
+        // Create label
+        const label = document.createElement('div');
+        label.className = 'trappist-planet-label';
+        label.textContent = planet.name.replace('TRAPPIST-1 ', '');
+        label.style.top = (planet.size / 2 + 8) + 'px';
+
+        wrapper.appendChild(planetEl);
+        wrapper.appendChild(label);
+        container.appendChild(wrapper);
+        trappistPlanetWrappers.push(wrapper);
+    });
+
+    // Start orbital animation
+    if (!trappistAnimationId) animateTrappistOrbits();
+
+    // Initialize pan/zoom
+    initTrappistPanZoom();
+
+    // TRAPPIST-1 Clock
+    function updateTrappistClock() {
+        const now = new Date();
+        const utc = now.toISOString().replace('T', '  ').substring(0, 21) + ' UTC';
+        const el = document.getElementById('trappist-clock');
+        if (el) el.textContent = utc;
+    }
+    updateTrappistClock();
+    setInterval(updateTrappistClock, 1000);
+}
+
+function animateTrappistOrbits() {
+    function animate() {
+        TRAPPIST_1_PLANETS.forEach((planet, index) => {
+            // Faster orbits for inner planets (realistic for TRAPPIST-1's compact system)
+            const baseSpeed = 0.008;
+            const speed = baseSpeed / (index + 1);
+            trappistPlanetAngles[index] += speed;
+            
+            const x = trappistCenterX + Math.cos(trappistPlanetAngles[index]) * planet.orbitRadius;
+            const y = trappistCenterY + Math.sin(trappistPlanetAngles[index]) * planet.orbitRadius;
+            
+            if (trappistPlanetWrappers[index]) {
+                trappistPlanetWrappers[index].style.left = x + 'px';
+                trappistPlanetWrappers[index].style.top = y + 'px';
+            }
+        });
+        trappistAnimationId = requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+// ===== TRAPPIST-1 STAR DETAIL =====
+function openTrappistStarDetail() {
+    viewingTarget = 'trappist-star';
+    
+    document.getElementById('trappist-system').classList.add('hidden');
+    document.getElementById('trappist-planet-detail').classList.remove('hidden');
+
+    // Create stars background
+    const detailStars = document.getElementById('trappist-detail-stars');
+    detailStars.innerHTML = '';
+    detailStars.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    createStars('trappist-detail-stars');
+
+    // Star display
+    const zoom = document.getElementById('trappist-planet-zoom');
+    zoom.style.background = TRAPPIST_1_STAR.gradient;
+    zoom.style.width = '200px';
+    zoom.style.height = '200px';
+    zoom.style.boxShadow = '0 0 40px 18px rgba(200,80,60,0.4), 0 0 80px 35px rgba(180,60,40,0.2), 0 0 150px 60px rgba(150,40,30,0.1)';
+
+    document.getElementById('trappist-planet-display-area').style.setProperty('--planet-glow', TRAPPIST_1_STAR.glow);
+    document.getElementById('trappist-planet-name-label').textContent = 'TRAPPIST-1';
+    document.getElementById('trappist-planet-info-title').textContent = TRAPPIST_1_STAR.name;
+    document.getElementById('trappist-planet-info-subtitle').textContent = TRAPPIST_1_STAR.subtitle;
+
+    // Classification tags
+    const classEl = document.getElementById('trappist-planet-classification');
+    classEl.innerHTML = '';
+    TRAPPIST_1_STAR.classification.forEach(tag => {
+        const t = document.createElement('span');
+        t.className = 'info-tag';
+        t.textContent = tag;
+        classEl.appendChild(t);
+    });
+
+    // Facts
+    const factsList = document.getElementById('trappist-planet-facts-list');
+    factsList.innerHTML = '';
+    TRAPPIST_1_STAR.facts.forEach((fact, i) => {
+        const item = document.createElement('div');
+        item.className = 'fact-item';
+        item.style.animationDelay = (i * 0.06) + 's';
+        item.innerHTML = `<span class="fact-icon">${fact.icon}</span>${fact.text}`;
+        factsList.appendChild(item);
+    });
+
+    // Hide navigation for star view
+    document.getElementById('trappist-planet-counter').textContent = 'STAR';
+    document.getElementById('btn-trappist-prev').style.visibility = 'hidden';
+    document.getElementById('btn-trappist-next').style.visibility = 'hidden';
+}
+
+// ===== TRAPPIST-1 PLANET DETAIL =====
+let currentTrappistPlanetIndex = 0;
+
+function openTrappistPlanetDetail(index) {
+    viewingTarget = 'trappist-planet';
+    currentTrappistPlanetIndex = index;
+    const planet = TRAPPIST_1_PLANETS[index];
+
+    document.getElementById('trappist-system').classList.add('hidden');
+    document.getElementById('trappist-planet-detail').classList.remove('hidden');
+
+    // Create stars background
+    const detailStars = document.getElementById('trappist-detail-stars');
+    detailStars.innerHTML = '';
+    detailStars.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    createStars('trappist-detail-stars');
+
+    // Planet display
+    const zoom = document.getElementById('trappist-planet-zoom');
+    zoom.style.background = planet.gradient;
+    zoom.style.width = '280px';
+    zoom.style.height = '280px';
+    zoom.style.boxShadow = `0 0 40px ${planet.glow}, 0 0 80px ${planet.glow}, inset -35px -25px 70px rgba(0,0,0,0.5)`;
+
+    document.getElementById('trappist-planet-display-area').style.setProperty('--planet-glow', planet.glow);
+    document.getElementById('trappist-planet-name-label').textContent = planet.name.toUpperCase();
+    document.getElementById('trappist-planet-info-title').textContent = planet.name;
+    document.getElementById('trappist-planet-info-subtitle').textContent = planet.subtitle;
+
+    // Classification tags
+    const classEl = document.getElementById('trappist-planet-classification');
+    classEl.innerHTML = '';
+    planet.classification.forEach(tag => {
+        const t = document.createElement('span');
+        t.className = 'info-tag';
+        t.textContent = tag;
+        classEl.appendChild(t);
+    });
+
+    // Facts
+    const factsList = document.getElementById('trappist-planet-facts-list');
+    factsList.innerHTML = '';
+    planet.facts.forEach((fact, i) => {
+        const item = document.createElement('div');
+        item.className = 'fact-item';
+        item.style.animationDelay = (i * 0.06) + 's';
+        item.innerHTML = `<span class="fact-icon">${fact.icon}</span>${fact.text}`;
+        factsList.appendChild(item);
+    });
+
+    // Navigation
+    document.getElementById('trappist-planet-counter').textContent = `${index + 1} / ${TRAPPIST_1_PLANETS.length}`;
+    document.getElementById('btn-trappist-prev').style.visibility = 'visible';
+    document.getElementById('btn-trappist-next').style.visibility = 'visible';
+    document.getElementById('btn-trappist-prev').disabled = index === 0;
+    document.getElementById('btn-trappist-next').disabled = index === TRAPPIST_1_PLANETS.length - 1;
+}
+
+// TRAPPIST-1 planet navigation
+document.getElementById('btn-trappist-prev').addEventListener('click', () => {
+    if (currentTrappistPlanetIndex > 0) {
+        currentTrappistPlanetIndex--;
+        openTrappistPlanetDetail(currentTrappistPlanetIndex);
+    }
+});
+
+document.getElementById('btn-trappist-next').addEventListener('click', () => {
+    if (currentTrappistPlanetIndex < TRAPPIST_1_PLANETS.length - 1) {
+        currentTrappistPlanetIndex++;
+        openTrappistPlanetDetail(currentTrappistPlanetIndex);
+    }
+});
+
+// Back from TRAPPIST-1 planet detail to system
+document.getElementById('btn-back-trappist-system').addEventListener('click', () => {
+    document.getElementById('trappist-planet-detail').classList.add('hidden');
+    document.getElementById('trappist-system').classList.remove('hidden');
+});
+
+// Back to landing from TRAPPIST-1
+document.getElementById('btn-back-landing-trappist').addEventListener('click', () => {
+    document.getElementById('trappist-system').classList.add('hidden');
+    document.getElementById('landing-screen').classList.remove('hidden');
+    // Reset TRAPPIST-1 pan/zoom state
+    if (trappistMomentumId) cancelAnimationFrame(trappistMomentumId);
+    trappistPanX = 0; trappistPanY = 0; trappistZoomLevel = 1;
+    trappistVelocityX = 0; trappistVelocityY = 0;
+    applyTrappistTransform();
+});
+
+// TRAPPIST-1 card click handler
+document.getElementById('card-trappist').addEventListener('click', () => {
+    startWormholeTransition('trappist', 'TRAPPIST-1 SYSTEM');
+});

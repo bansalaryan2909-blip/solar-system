@@ -89,6 +89,28 @@
                     </div>
                     <div class="system-card-btn">EXPLORE →</div>
                 </div>
+                <div class="system-card" id="card-trappist">
+                    <div class="system-card-image trappist-preview">
+                        <div class="preview-star star-trappist"></div>
+                        <div class="preview-orbit trappist-orbit-1"></div>
+                        <div class="preview-orbit trappist-orbit-2"></div>
+                        <div class="preview-orbit trappist-orbit-3"></div>
+                        <div class="preview-orbit trappist-orbit-4"></div>
+                        <div class="preview-planet trappist-planet-1"></div>
+                        <div class="preview-planet trappist-planet-2"></div>
+                        <div class="preview-planet trappist-planet-3"></div>
+                        <div class="preview-planet trappist-planet-4"></div>
+                        <div class="preview-planet trappist-planet-5"></div>
+                        <div class="preview-planet trappist-planet-6"></div>
+                        <div class="preview-planet trappist-planet-7"></div>
+                    </div>
+                    <div class="system-card-info">
+                        <h2>TRAPPIST-1</h2>
+                        <p>7 Earth-sized planets · 3 in habitable zone · Ultra-cool dwarf</p>
+                        <span class="system-distance">40.7 light-years away</span>
+                    </div>
+                    <div class="system-card-btn">EXPLORE →</div>
+                </div>
             </div>
         </div>
     </div>
@@ -191,6 +213,69 @@
                 </div>
                 <div class="facts-section-title">Key Data</div>
                 <div class="facts-list" id="proxima-b-facts-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAPPIST-1 System View -->
+    <div id="trappist-system" class="hidden">
+        <div id="trappist-stars-container"></div>
+        <div class="grid-overlay"></div>
+        
+        <button class="btn-back btn-back-landing" id="btn-back-landing-trappist">
+            <span class="btn-icon">‹</span> Back to Menu
+        </button>
+
+        <div id="trappist-system-viewport">
+            <div id="trappist-system-container">
+                <div class="trappist-star" id="trappist-star">
+                    <div class="star-glow glow-trappist"></div>
+                    <div class="star-surface surface-trappist"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item"><span class="status-dot" style="background:#c44;box-shadow:0 0 6px rgba(200,80,80,0.5);"></span>TRAPPIST-1 System</div>
+            <div class="status-item" id="trappist-clock"></div>
+        </div>
+
+        <div class="pan-hint" id="trappist-pan-hint">Scroll to zoom · Drag to pan</div>
+
+        <div class="zoom-controls">
+            <button class="zoom-btn" id="trappist-zoom-in" title="Zoom In">+</button>
+            <button class="zoom-btn zoom-reset" id="trappist-zoom-reset" title="Reset View">RST</button>
+            <button class="zoom-btn" id="trappist-zoom-out" title="Zoom Out">−</button>
+        </div>
+    </div>
+
+    <!-- TRAPPIST-1 Planet Detail View -->
+    <div id="trappist-planet-detail" class="hidden">
+        <div id="trappist-detail-stars"></div>
+        <button class="btn-back" id="btn-back-trappist-system">
+            <span class="btn-icon">‹</span> Return to System
+        </button>
+        <div class="detail-layout">
+            <div class="planet-display" id="trappist-planet-display-area">
+                <div class="planet-zoom" id="trappist-planet-zoom">
+                    <div class="planet-shadow"></div>
+                    <div class="planet-highlight"></div>
+                </div>
+                <div class="planet-name-label" id="trappist-planet-name-label"></div>
+            </div>
+            <div class="info-panel" id="trappist-planet-info-panel">
+                <div class="info-header">
+                    <h2 class="info-title" id="trappist-planet-info-title"></h2>
+                    <div class="info-subtitle" id="trappist-planet-info-subtitle"></div>
+                    <div class="info-classification" id="trappist-planet-classification"></div>
+                </div>
+                <div class="facts-section-title">Key Data</div>
+                <div class="facts-list" id="trappist-planet-facts-list"></div>
+                <div class="moon-nav">
+                    <button class="btn-nav" id="btn-trappist-prev"><span>‹</span> Previous</button>
+                    <span class="moon-counter" id="trappist-planet-counter"></span>
+                    <button class="btn-nav" id="btn-trappist-next">Next <span>›</span></button>
+                </div>
             </div>
         </div>
     </div>
