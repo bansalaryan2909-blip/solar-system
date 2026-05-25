@@ -1014,6 +1014,22 @@ document.getElementById('btn-see-history').addEventListener('click', () => {
 });
 
 function showHistorySlide() {
+    // Handle TRAPPIST-1 star history
+    if (viewingTarget === 'trappist-star') {
+        const slide = TRAPPIST_1_STAR.history[currentTrappistHistorySlide];
+
+        const icon = document.getElementById('history-planet-icon');
+        icon.style.background = TRAPPIST_1_STAR.gradient;
+        icon.style.boxShadow = '0 0 25px rgba(200,80,60,0.4)';
+
+        document.getElementById('history-title').textContent = `History of ${TRAPPIST_1_STAR.name}`;
+        document.getElementById('history-slide').innerHTML = `<div class="history-slide-heading">${slide.heading}</div><p>${slide.text}</p>`;
+        document.getElementById('history-counter').textContent = `${currentTrappistHistorySlide + 1} / ${TRAPPIST_1_STAR.history.length}`;
+        document.getElementById('btn-history-prev').disabled = currentTrappistHistorySlide === 0;
+        document.getElementById('btn-history-next').disabled = currentTrappistHistorySlide === TRAPPIST_1_STAR.history.length - 1;
+        return;
+    }
+
     // Handle AC star history
     if (viewingTarget === 'ac-star') {
         const star = ALPHA_CENTAURI_STARS[currentACStarIndex];
@@ -1059,14 +1075,18 @@ function showHistorySlide() {
 }
 
 document.getElementById('btn-history-prev').addEventListener('click', () => {
-    if (viewingTarget === 'ac-star') {
+    if (viewingTarget === 'trappist-star') {
+        if (currentTrappistHistorySlide > 0) { currentTrappistHistorySlide--; showHistorySlide(); }
+    } else if (viewingTarget === 'ac-star') {
         if (currentACHistorySlide > 0) { currentACHistorySlide--; showHistorySlide(); }
     } else {
         if (currentHistorySlide > 0) { currentHistorySlide--; showHistorySlide(); }
     }
 });
 document.getElementById('btn-history-next').addEventListener('click', () => {
-    if (viewingTarget === 'ac-star') {
+    if (viewingTarget === 'trappist-star') {
+        if (currentTrappistHistorySlide < TRAPPIST_1_STAR.history.length - 1) { currentTrappistHistorySlide++; showHistorySlide(); }
+    } else if (viewingTarget === 'ac-star') {
         const star = ALPHA_CENTAURI_STARS[currentACStarIndex];
         if (currentACHistorySlide < star.history.length - 1) { currentACHistorySlide++; showHistorySlide(); }
     } else {
@@ -1076,7 +1096,9 @@ document.getElementById('btn-history-next').addEventListener('click', () => {
 });
 document.getElementById('btn-exit-history').addEventListener('click', () => {
     document.getElementById('history-viewer').classList.add('hidden');
-    if (viewingTarget === 'ac-star') {
+    if (viewingTarget === 'trappist-star') {
+        document.getElementById('trappist-planet-detail').classList.remove('hidden');
+    } else if (viewingTarget === 'ac-star') {
         document.getElementById('ac-star-detail').classList.remove('hidden');
     } else {
         document.getElementById('planet-detail').classList.remove('hidden');
@@ -1285,6 +1307,11 @@ function initLandingScreen() {
     // Alpha Centauri card click
     document.getElementById('card-alpha-centauri').addEventListener('click', () => {
         startWormholeTransition('alpha-centauri', 'ALPHA CENTAURI');
+    });
+
+    // TRAPPIST-1 card click
+    document.getElementById('card-trappist').addEventListener('click', () => {
+        startWormholeTransition('trappist', 'TRAPPIST-1 SYSTEM');
     });
 
     // Back to landing from Solar System
@@ -2436,6 +2463,8 @@ function animateTrappistOrbits() {
 }
 
 // ===== TRAPPIST-1 STAR DETAIL =====
+let currentTrappistHistorySlide = 0;
+
 function openTrappistStarDetail() {
     viewingTarget = 'trappist-star';
     
@@ -2480,6 +2509,19 @@ function openTrappistStarDetail() {
         item.innerHTML = `<span class="fact-icon">${fact.icon}</span>${fact.text}`;
         factsList.appendChild(item);
     });
+
+    // Actions - add history button for star
+    const actionsEl = document.getElementById('trappist-star-actions');
+    actionsEl.innerHTML = '';
+    actionsEl.style.display = 'flex';
+    
+    const historyBtn = document.createElement('button');
+    historyBtn.className = 'btn-action btn-action-alt';
+    historyBtn.innerHTML = '<span class="btn-action-icon">◷</span> Star History';
+    historyBtn.addEventListener('click', () => {
+        showTrappistStarHistory();
+    });
+    actionsEl.appendChild(historyBtn);
 
     // Hide navigation for star view
     document.getElementById('trappist-planet-counter').textContent = 'STAR';
@@ -2537,6 +2579,11 @@ function openTrappistPlanetDetail(index) {
         factsList.appendChild(item);
     });
 
+    // Hide actions section for planets (only show for star)
+    const actionsEl = document.getElementById('trappist-star-actions');
+    actionsEl.innerHTML = '';
+    actionsEl.style.display = 'none';
+
     // Navigation
     document.getElementById('trappist-planet-counter').textContent = `${index + 1} / ${TRAPPIST_1_PLANETS.length}`;
     document.getElementById('btn-trappist-prev').style.visibility = 'visible';
@@ -2560,6 +2607,20 @@ document.getElementById('btn-trappist-next').addEventListener('click', () => {
     }
 });
 
+// ===== TRAPPIST-1 STAR HISTORY =====
+function showTrappistStarHistory() {
+    currentTrappistHistorySlide = 0;
+    document.getElementById('trappist-planet-detail').classList.add('hidden');
+    document.getElementById('history-viewer').classList.remove('hidden');
+
+    const histStars = document.getElementById('history-stars');
+    histStars.innerHTML = '';
+    histStars.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    createStars('history-stars');
+    
+    showHistorySlide();
+}
+
 // Back from TRAPPIST-1 planet detail to system
 document.getElementById('btn-back-trappist-system').addEventListener('click', () => {
     document.getElementById('trappist-planet-detail').classList.add('hidden');
@@ -2575,9 +2636,4 @@ document.getElementById('btn-back-landing-trappist').addEventListener('click', (
     trappistPanX = 0; trappistPanY = 0; trappistZoomLevel = 1;
     trappistVelocityX = 0; trappistVelocityY = 0;
     applyTrappistTransform();
-});
-
-// TRAPPIST-1 card click handler
-document.getElementById('card-trappist').addEventListener('click', () => {
-    startWormholeTransition('trappist', 'TRAPPIST-1 SYSTEM');
 });
