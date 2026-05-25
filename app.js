@@ -1617,43 +1617,46 @@ function startQuantumRealmPhase(destination, destinationName, card) {
         const particles = particlesContainer.querySelectorAll('.q-particle');
         particles.forEach(p => p.remove());
         
-        // Show destination
+        // Show destination and welcome message
         if (destination === 'solar-system') {
             document.getElementById('solar-system').classList.remove('hidden');
+            showWelcomeMessage('solar', 'THE SOLAR SYSTEM', 'Home to 8 planets, 200+ moons, and countless wonders');
         } else if (destination === 'alpha-centauri') {
             document.getElementById('alpha-centauri-system').classList.remove('hidden');
             buildAlphaCentauriSystem();
+            showWelcomeMessage('alpha', 'ALPHA CENTAURI', 'A triple star system 4.37 light-years from Earth');
         } else if (destination === 'trappist') {
             document.getElementById('trappist-system').classList.remove('hidden');
             buildTrappistSystem();
+            showWelcomeMessage('trappist', 'TRAPPIST-1', 'Seven Earth-sized worlds orbiting an ultra-cool red dwarf');
         }
     }, 5500);
 }
-        shuttleApproach.style.zIndex = '';
-        shuttle.style.transform = '';
-        shuttle.style.opacity = '';
-        shuttle.classList.remove('quantum-glow');
-        shuttle.classList.remove('approaching');
-        
-        // Hide distance indicator
-        const warpDistanceEl = document.getElementById('warp-distance');
-        if (warpDistanceEl) warpDistanceEl.classList.remove('visible');
-        
-        // Clean up particles
-        const particles = particlesContainer.querySelectorAll('.q-particle');
-        particles.forEach(p => p.remove());
-        
-        // Show destination
-        if (destination === 'solar-system') {
-            document.getElementById('solar-system').classList.remove('hidden');
-        } else if (destination === 'alpha-centauri') {
-            document.getElementById('alpha-centauri-system').classList.remove('hidden');
-            buildAlphaCentauriSystem();
-        } else if (destination === 'trappist') {
-            document.getElementById('trappist-system').classList.remove('hidden');
-            buildTrappistSystem();
-        }
-    }, 5000);
+
+// ===== WELCOME MESSAGE =====
+function showWelcomeMessage(type, title, subtitle) {
+    const overlay = document.getElementById('welcome-overlay');
+    const icon = document.getElementById('welcome-icon');
+    const titleEl = document.getElementById('welcome-title');
+    const subtitleEl = document.getElementById('welcome-subtitle');
+    
+    // Set content
+    titleEl.textContent = title;
+    subtitleEl.textContent = subtitle;
+    
+    // Set icon and color theme
+    icon.className = 'welcome-icon ' + type;
+    overlay.className = 'visible ' + type;
+    
+    // Auto-hide after 3.5 seconds
+    setTimeout(() => {
+        overlay.classList.add('fade-out');
+    }, 3500);
+    
+    // Remove completely after fade
+    setTimeout(() => {
+        overlay.className = 'hidden';
+    }, 4700);
 }
 
 // Animate warp distance countdown
