@@ -1948,6 +1948,24 @@ html, body {
     pointer-events: auto;
 }
 
+/* Screen shake during warp */
+@keyframes warp-shake {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-2px, 1px); }
+    20% { transform: translate(2px, -1px); }
+    30% { transform: translate(-1px, 2px); }
+    40% { transform: translate(1px, -2px); }
+    50% { transform: translate(-2px, -1px); }
+    60% { transform: translate(2px, 1px); }
+    70% { transform: translate(-1px, -2px); }
+    80% { transform: translate(1px, 2px); }
+    90% { transform: translate(-2px, 1px); }
+}
+
+#wormhole-transition.warp-active.shaking {
+    animation: warp-shake 0.1s linear infinite;
+}
+
 /* ===== PHASE 1: SHUTTLE APPROACH ===== */
 .shuttle-approach {
     position: absolute;
@@ -2110,9 +2128,95 @@ html, body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: radial-gradient(ellipse at center,
-        #020108 0%,
-        #010104 40%,
-        #000 70%);
+        #030108 0%,
+        #010105 30%,
+        #000002 60%,
+        #000 100%);
+}
+
+/* Warp tunnel - 3D depth effect */
+.warp-tunnel {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; height: 100%;
+    perspective: 1000px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.quantum-realm.active .warp-tunnel {
+    opacity: 1;
+}
+
+.tunnel-layer {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid;
+}
+
+.tunnel-layer.t1 {
+    width: 150vmax; height: 150vmax;
+    border-color: rgba(100, 150, 255, 0.1);
+    box-shadow: inset 0 0 100px rgba(80, 130, 255, 0.05);
+    animation: tunnel-zoom 2s linear infinite;
+}
+
+.tunnel-layer.t2 {
+    width: 120vmax; height: 120vmax;
+    border-color: rgba(120, 160, 255, 0.08);
+    animation: tunnel-zoom 2s linear infinite 0.66s;
+}
+
+.tunnel-layer.t3 {
+    width: 90vmax; height: 90vmax;
+    border-color: rgba(140, 180, 255, 0.06);
+    animation: tunnel-zoom 2s linear infinite 1.33s;
+}
+
+@keyframes tunnel-zoom {
+    0% {
+        transform: translate(-50%, -50%) scale(0.1);
+        opacity: 0;
+        border-width: 20px;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+        border-width: 1px;
+    }
+}
+
+/* Warp grid - hyperspace corridor */
+.warp-grid {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: 
+        linear-gradient(90deg, transparent 49.5%, rgba(80, 130, 200, 0.03) 50%, transparent 50.5%),
+        linear-gradient(0deg, transparent 49.5%, rgba(80, 130, 200, 0.03) 50%, transparent 50.5%);
+    background-size: 60px 60px;
+    opacity: 0;
+    animation: grid-flow 0.5s linear infinite;
+    transform: perspective(500px) rotateX(60deg) translateY(-50%);
+    transform-origin: center bottom;
+}
+
+.quantum-realm.active .warp-grid {
+    opacity: 0.5;
+}
+
+@keyframes grid-flow {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 60px; }
 }
 
 /* Warp tunnel effect - realistic hyperspace */
@@ -2128,62 +2232,62 @@ html, body {
     width: 300vmax;
     height: 300vmax;
     background: conic-gradient(from 0deg,
-        rgba(180, 200, 255, 0.08) 0deg,
-        rgba(150, 180, 255, 0.12) 30deg,
-        rgba(120, 160, 255, 0.06) 60deg,
-        rgba(100, 140, 255, 0.1) 90deg,
-        rgba(130, 170, 255, 0.07) 120deg,
-        rgba(160, 190, 255, 0.11) 150deg,
-        rgba(140, 175, 255, 0.08) 180deg,
-        rgba(110, 150, 255, 0.1) 210deg,
-        rgba(150, 180, 255, 0.06) 240deg,
-        rgba(170, 195, 255, 0.09) 270deg,
-        rgba(130, 165, 255, 0.11) 300deg,
-        rgba(145, 175, 255, 0.07) 330deg,
-        rgba(180, 200, 255, 0.08) 360deg);
+        rgba(180, 200, 255, 0.1) 0deg,
+        rgba(150, 180, 255, 0.15) 30deg,
+        rgba(120, 160, 255, 0.08) 60deg,
+        rgba(100, 140, 255, 0.12) 90deg,
+        rgba(130, 170, 255, 0.09) 120deg,
+        rgba(160, 190, 255, 0.14) 150deg,
+        rgba(140, 175, 255, 0.1) 180deg,
+        rgba(110, 150, 255, 0.13) 210deg,
+        rgba(150, 180, 255, 0.08) 240deg,
+        rgba(170, 195, 255, 0.11) 270deg,
+        rgba(130, 165, 255, 0.14) 300deg,
+        rgba(145, 175, 255, 0.09) 330deg,
+        rgba(180, 200, 255, 0.1) 360deg);
     filter: blur(40px);
-    animation: warp-tunnel-1 3s linear infinite;
+    animation: warp-tunnel-1 2s linear infinite;
 }
 
 .quantum-layer.layer-2 {
     width: 250vmax;
     height: 250vmax;
     background: conic-gradient(from 90deg,
-        rgba(200, 210, 255, 0.1) 0deg,
-        rgba(180, 195, 255, 0.06) 45deg,
-        rgba(160, 180, 255, 0.12) 90deg,
-        rgba(140, 165, 255, 0.08) 135deg,
-        rgba(170, 190, 255, 0.1) 180deg,
-        rgba(190, 205, 255, 0.07) 225deg,
-        rgba(155, 175, 255, 0.11) 270deg,
-        rgba(175, 195, 255, 0.09) 315deg,
-        rgba(200, 210, 255, 0.1) 360deg);
+        rgba(200, 210, 255, 0.12) 0deg,
+        rgba(180, 195, 255, 0.08) 45deg,
+        rgba(160, 180, 255, 0.15) 90deg,
+        rgba(140, 165, 255, 0.1) 135deg,
+        rgba(170, 190, 255, 0.13) 180deg,
+        rgba(190, 205, 255, 0.09) 225deg,
+        rgba(155, 175, 255, 0.14) 270deg,
+        rgba(175, 195, 255, 0.11) 315deg,
+        rgba(200, 210, 255, 0.12) 360deg);
     filter: blur(30px);
-    animation: warp-tunnel-2 2.5s linear infinite reverse;
+    animation: warp-tunnel-2 1.5s linear infinite reverse;
 }
 
 .quantum-layer.layer-3 {
     width: 200vmax;
     height: 200vmax;
     background: radial-gradient(ellipse at center,
-        rgba(220, 230, 255, 0.15) 0%,
-        rgba(180, 200, 255, 0.08) 30%,
-        rgba(140, 170, 255, 0.04) 60%,
+        rgba(220, 230, 255, 0.2) 0%,
+        rgba(180, 200, 255, 0.1) 30%,
+        rgba(140, 170, 255, 0.05) 60%,
         transparent 80%);
     filter: blur(20px);
-    animation: warp-pulse 1.5s ease-in-out infinite alternate;
+    animation: warp-pulse 1s ease-in-out infinite alternate;
 }
 
 .quantum-layer.layer-4 {
     width: 150vmax;
     height: 150vmax;
     background: radial-gradient(ellipse at center,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(200, 220, 255, 0.1) 20%,
-        rgba(150, 180, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(200, 220, 255, 0.15) 20%,
+        rgba(150, 180, 255, 0.08) 50%,
         transparent 70%);
     filter: blur(15px);
-    animation: warp-core-pulse 1s ease-in-out infinite alternate;
+    animation: warp-core-pulse 0.6s ease-in-out infinite alternate;
 }
 
 @keyframes warp-tunnel-1 {
@@ -2197,13 +2301,105 @@ html, body {
 }
 
 @keyframes warp-pulse {
-    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
-    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; }
+    0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
 }
 
 @keyframes warp-core-pulse {
-    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.7; }
-    100% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.7; }
+    100% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+}
+
+/* Chromatic aberration effect */
+.chromatic-aberration {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: screen;
+}
+
+.quantum-realm.active .chromatic-aberration {
+    opacity: 1;
+    animation: chromatic-shift 0.15s ease-in-out infinite alternate;
+}
+
+@keyframes chromatic-shift {
+    0% {
+        box-shadow: 
+            inset -3px 0 30px rgba(255, 0, 0, 0.1),
+            inset 3px 0 30px rgba(0, 100, 255, 0.1);
+    }
+    100% {
+        box-shadow: 
+            inset -5px 0 40px rgba(255, 0, 0, 0.15),
+            inset 5px 0 40px rgba(0, 100, 255, 0.15);
+    }
+}
+
+/* Vignette effect */
+.warp-vignette {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center,
+        transparent 30%,
+        rgba(0, 0, 20, 0.3) 60%,
+        rgba(0, 0, 10, 0.7) 85%,
+        rgba(0, 0, 0, 0.9) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.quantum-realm.active .warp-vignette {
+    opacity: 1;
+}
+
+/* Warp HUD elements */
+.warp-hud {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.quantum-realm.active .warp-hud {
+    opacity: 1;
+}
+
+.hud-left, .hud-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.hud-left { left: 5%; }
+.hud-right { right: 5%; }
+
+.hud-line {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(100, 180, 255, 0.6), transparent);
+    animation: hud-scan 1s ease-in-out infinite;
+}
+
+.hud-right .hud-line {
+    background: linear-gradient(-90deg, rgba(100, 180, 255, 0.6), transparent);
+}
+
+.hud-line:nth-child(2) { animation-delay: 0.2s; width: 60px; }
+.hud-line:nth-child(3) { animation-delay: 0.4s; width: 40px; }
+
+@keyframes hud-scan {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
 }
 
 /* Warp speed rings - hyperspace effect */
@@ -2219,51 +2415,51 @@ html, body {
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 1px solid;
+    border: 2px solid;
     opacity: 0;
 }
 
 .q-ring.r1 {
-    width: 20px; height: 20px;
-    border-color: rgba(200, 220, 255, 0.8);
-    box-shadow: 0 0 10px rgba(200, 220, 255, 0.4);
-    animation: warp-ring-expand 0.8s ease-out infinite;
+    width: 30px; height: 30px;
+    border-color: rgba(220, 240, 255, 0.9);
+    box-shadow: 0 0 15px rgba(200, 230, 255, 0.6), 0 0 30px rgba(150, 200, 255, 0.3);
+    animation: warp-ring-expand 0.6s ease-out infinite;
 }
 
 .q-ring.r2 {
-    width: 20px; height: 20px;
-    border-color: rgba(180, 200, 255, 0.7);
-    box-shadow: 0 0 8px rgba(180, 200, 255, 0.3);
-    animation: warp-ring-expand 0.8s ease-out infinite 0.16s;
+    width: 30px; height: 30px;
+    border-color: rgba(200, 220, 255, 0.8);
+    box-shadow: 0 0 12px rgba(180, 210, 255, 0.5);
+    animation: warp-ring-expand 0.6s ease-out infinite 0.12s;
 }
 
 .q-ring.r3 {
-    width: 20px; height: 20px;
-    border-color: rgba(160, 190, 255, 0.6);
-    box-shadow: 0 0 6px rgba(160, 190, 255, 0.3);
-    animation: warp-ring-expand 0.8s ease-out infinite 0.32s;
+    width: 30px; height: 30px;
+    border-color: rgba(180, 200, 255, 0.7);
+    box-shadow: 0 0 10px rgba(160, 190, 255, 0.4);
+    animation: warp-ring-expand 0.6s ease-out infinite 0.24s;
 }
 
 .q-ring.r4 {
-    width: 20px; height: 20px;
-    border-color: rgba(140, 180, 255, 0.5);
-    animation: warp-ring-expand 0.8s ease-out infinite 0.48s;
+    width: 30px; height: 30px;
+    border-color: rgba(160, 190, 255, 0.6);
+    animation: warp-ring-expand 0.6s ease-out infinite 0.36s;
 }
 
 .q-ring.r5 {
-    width: 20px; height: 20px;
-    border-color: rgba(120, 170, 255, 0.4);
-    animation: warp-ring-expand 0.8s ease-out infinite 0.64s;
+    width: 30px; height: 30px;
+    border-color: rgba(140, 180, 255, 0.5);
+    animation: warp-ring-expand 0.6s ease-out infinite 0.48s;
 }
 
 @keyframes warp-ring-expand {
     0% {
         transform: translate(-50%, -50%) scale(1);
-        opacity: 0.9;
-        border-width: 2px;
+        opacity: 1;
+        border-width: 3px;
     }
     100% {
-        transform: translate(-50%, -50%) scale(40);
+        transform: translate(-50%, -50%) scale(60);
         opacity: 0;
         border-width: 0.5px;
     }
@@ -2279,21 +2475,31 @@ html, body {
 
 .q-particle {
     position: absolute;
-    background: linear-gradient(90deg, transparent 0%, rgba(200, 220, 255, 0.9) 50%, transparent 100%);
     animation: star-streak linear forwards;
+}
+
+/* Different particle types */
+.q-particle.streak {
+    background: linear-gradient(90deg, transparent 0%, var(--streak-color, rgba(200, 220, 255, 0.9)) 50%, transparent 100%);
+    border-radius: 50%;
+}
+
+.q-particle.dot {
+    border-radius: 50%;
+    background: var(--dot-color, rgba(255, 255, 255, 0.9));
+    box-shadow: 0 0 var(--dot-glow, 4px) var(--dot-color, rgba(200, 220, 255, 0.6));
 }
 
 @keyframes star-streak {
     0% {
-        transform: translateX(0) scaleX(0.5);
+        transform: translateX(0) scaleX(0.3);
         opacity: 0;
     }
-    10% {
+    5% {
         opacity: 1;
-        transform: scaleX(1);
     }
     100% {
-        transform: translateX(var(--dx)) scaleX(3);
+        transform: translateX(var(--dx)) scaleX(4);
         opacity: 0;
     }
 }
@@ -2305,10 +2511,11 @@ html, body {
     width: 100%; height: 100%;
     background: radial-gradient(circle at center,
         rgba(255, 255, 255, 1) 0%,
-        rgba(220, 235, 255, 0.9) 20%,
-        rgba(180, 210, 255, 0.6) 40%,
-        rgba(140, 180, 255, 0.3) 60%,
-        transparent 80%);
+        rgba(220, 235, 255, 0.95) 15%,
+        rgba(180, 210, 255, 0.7) 35%,
+        rgba(140, 180, 255, 0.4) 55%,
+        rgba(100, 150, 255, 0.2) 75%,
+        transparent 100%);
     opacity: 0;
     pointer-events: none;
 }
@@ -2348,53 +2555,71 @@ html, body {
 /* Warp text */
 .quantum-text {
     position: absolute;
-    bottom: 12%;
+    bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 5px;
-    color: rgba(200, 220, 255, 0.9);
-    text-shadow: 0 0 15px rgba(150, 180, 255, 0.6), 0 0 30px rgba(100, 150, 255, 0.3);
+    font-size: 0.9rem;
+    letter-spacing: 6px;
+    color: rgba(200, 220, 255, 0.95);
+    text-shadow: 
+        0 0 20px rgba(150, 180, 255, 0.8),
+        0 0 40px rgba(100, 150, 255, 0.5),
+        0 0 60px rgba(80, 130, 255, 0.3);
     white-space: nowrap;
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .quantum-text.visible {
     opacity: 1;
+    animation: text-glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes text-glow {
+    0% { text-shadow: 0 0 20px rgba(150, 180, 255, 0.8), 0 0 40px rgba(100, 150, 255, 0.5); }
+    100% { text-shadow: 0 0 30px rgba(150, 180, 255, 1), 0 0 60px rgba(100, 150, 255, 0.7), 0 0 80px rgba(80, 130, 255, 0.4); }
 }
 
 /* Warp speed indicator */
 .warp-speed-indicator {
     position: absolute;
-    top: 15%;
+    top: 12%;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 3px;
-    color: rgba(200, 220, 255, 0.7);
-    text-shadow: 0 0 20px rgba(150, 180, 255, 0.5);
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: rgba(220, 240, 255, 0.9);
+    text-shadow: 
+        0 0 30px rgba(150, 200, 255, 0.8),
+        0 0 60px rgba(100, 150, 255, 0.5);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .warp-speed-indicator.visible {
     opacity: 1;
+    animation: speed-pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes speed-pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    100% { transform: translateX(-50%) scale(1.05); }
 }
 
 /* Warp distance indicator */
 .warp-distance-indicator {
     position: absolute;
-    top: 22%;
+    top: 20%;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 4px;
-    color: rgba(150, 200, 180, 0.8);
-    text-shadow: 0 0 15px rgba(100, 180, 150, 0.4);
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: rgba(150, 220, 200, 0.9);
+    text-shadow: 0 0 20px rgba(100, 200, 180, 0.6);
     opacity: 0;
     transition: opacity 0.3s ease;
     white-space: nowrap;
@@ -2404,32 +2629,76 @@ html, body {
     opacity: 1;
 }
 
+/* Destination indicator */
+.destination-indicator {
+    position: absolute;
+    top: 26%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 8px;
+    color: rgba(255, 200, 150, 0.7);
+    text-shadow: 0 0 15px rgba(255, 180, 100, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.destination-indicator.visible {
+    opacity: 1;
+}
+
 /* Reality distortion effect */
 .quantum-realm.active .quantum-layer {
     opacity: 1;
-    transition: opacity 0.5s ease-in;
+    transition: opacity 0.3s ease-in;
 }
 
 /* Quantum exit flash animation */
 @keyframes quantum-exit-flash {
-    0% { opacity: 0; transform: scale(0.3); }
-    30% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(2); }
+    0% { opacity: 0; transform: scale(0.2); }
+    40% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(3); }
 }
 
 /* Landing screen card highlight during approach */
 .system-card.shuttle-target {
-    box-shadow: 0 0 60px rgba(100, 180, 255, 0.5), 0 0 120px rgba(80, 150, 255, 0.3);
-    border-color: rgba(100, 180, 255, 0.6);
-    transform: translateY(-8px) scale(1.02);
-    animation: target-pulse 0.5s ease-in-out infinite alternate;
+    box-shadow: 
+        0 0 60px rgba(100, 180, 255, 0.6),
+        0 0 120px rgba(80, 150, 255, 0.4),
+        0 0 180px rgba(60, 120, 255, 0.2);
+    border-color: rgba(100, 180, 255, 0.8);
+    transform: translateY(-8px) scale(1.03);
+    animation: target-pulse 0.4s ease-in-out infinite alternate;
 }
 
 @keyframes target-pulse {
     0% { 
-        box-shadow: 0 0 60px rgba(100, 180, 255, 0.5), 0 0 120px rgba(80, 150, 255, 0.3);
+        box-shadow: 0 0 60px rgba(100, 180, 255, 0.6), 0 0 120px rgba(80, 150, 255, 0.4);
     }
     100% { 
-        box-shadow: 0 0 80px rgba(100, 180, 255, 0.7), 0 0 150px rgba(80, 150, 255, 0.5);
+        box-shadow: 0 0 80px rgba(100, 180, 255, 0.8), 0 0 160px rgba(80, 150, 255, 0.6), 0 0 200px rgba(60, 120, 255, 0.3);
     }
+}
+
+/* Destination-specific color themes */
+.quantum-realm.dest-solar .quantum-layer.layer-1,
+.quantum-realm.dest-solar .quantum-layer.layer-2 {
+    filter: blur(40px) hue-rotate(-20deg);
+}
+
+.quantum-realm.dest-alpha .quantum-layer.layer-1,
+.quantum-realm.dest-alpha .quantum-layer.layer-2 {
+    filter: blur(40px) hue-rotate(10deg) saturate(1.2);
+}
+
+.quantum-realm.dest-trappist .quantum-layer.layer-1,
+.quantum-realm.dest-trappist .quantum-layer.layer-2 {
+    filter: blur(40px) hue-rotate(-40deg) saturate(1.3);
+}
+
+.quantum-realm.dest-trappist .q-ring {
+    border-color: rgba(255, 180, 150, 0.7);
+    box-shadow: 0 0 15px rgba(255, 150, 100, 0.5);
 }

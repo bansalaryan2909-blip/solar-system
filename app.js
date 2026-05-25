@@ -1471,6 +1471,7 @@ function startQuantumRealmPhase(destination, destinationName, card) {
     const shuttle = shuttleApproach.querySelector('.shuttle-craft');
     const warpSpeed = document.getElementById('warp-speed');
     const warpDistance = document.getElementById('warp-distance');
+    const destIndicator = document.getElementById('destination-indicator');
     
     // Determine distance based on destination
     let totalDistance;
@@ -1486,6 +1487,16 @@ function startQuantumRealmPhase(destination, destinationName, card) {
     document.getElementById('landing-screen').classList.add('hidden');
     wormhole.classList.add('warp-active');
     card.classList.remove('shuttle-target');
+    
+    // Add destination-specific color theme
+    quantumRealm.classList.remove('dest-solar', 'dest-alpha', 'dest-trappist');
+    if (destination === 'solar-system') {
+        quantumRealm.classList.add('dest-solar');
+    } else if (destination === 'alpha-centauri') {
+        quantumRealm.classList.add('dest-alpha');
+    } else if (destination === 'trappist') {
+        quantumRealm.classList.add('dest-trappist');
+    }
     
     // Remove approach glow, add quantum glow
     shuttle.classList.remove('approaching');
@@ -1512,62 +1523,112 @@ function startQuantumRealmPhase(destination, destinationName, card) {
         quantumRealm.classList.add('active');
     }, 100);
     
+    // Add screen shake effect
+    setTimeout(() => {
+        wormhole.classList.add('shaking');
+    }, 300);
+    
     // Show text
     setTimeout(() => {
         quantumText.classList.add('visible');
-    }, 500);
+    }, 400);
     
     // Show warp speed indicator with animation
     setTimeout(() => {
         warpSpeed.classList.add('visible');
         animateWarpSpeed(warpSpeed);
-    }, 800);
+    }, 600);
     
     // Show distance indicator with countdown
     setTimeout(() => {
         warpDistance.classList.add('visible');
         animateWarpDistance(warpDistance, totalDistance, destination);
+    }, 800);
+    
+    // Show destination indicator
+    setTimeout(() => {
+        destIndicator.textContent = '▸ ' + destinationName + ' ◂';
+        destIndicator.classList.add('visible');
     }, 1000);
     
-    // Start star streak particles (warp speed effect)
+    // Start enhanced star streak particles (warp speed effect)
     quantumParticleInterval = setInterval(() => {
-        createQuantumParticle(particlesContainer);
-        createQuantumParticle(particlesContainer); // Double the streaks
-    }, 25);
+        createQuantumParticle(particlesContainer, destination);
+        createQuantumParticle(particlesContainer, destination);
+        createQuantumParticle(particlesContainer, destination); // Triple the streaks
+        // Add occasional bright dots
+        if (Math.random() > 0.7) {
+            createQuantumDot(particlesContainer, destination);
+        }
+    }, 20);
     
     // Animate shuttle flying through quantum realm
     animateShuttleThroughQuantum(shuttle);
     
     // Text phases during warp travel
     setTimeout(() => {
-        quantumText.textContent = 'WARP SPEED ENGAGED';
-    }, 1200);
+        quantumText.textContent = 'WARP DRIVE ENGAGED';
+    }, 1000);
     
     setTimeout(() => {
-        quantumText.textContent = 'DESTINATION: ' + destinationName;
-    }, 2500);
+        quantumText.textContent = 'TRAVERSING INTERSTELLAR SPACE';
+    }, 2200);
     
     setTimeout(() => {
-        quantumText.textContent = 'DECELERATING...';
-    }, 3800);
+        quantumText.textContent = 'APPROACHING ' + destinationName;
+    }, 3400);
     
-    // Flash and exit at 4.5 seconds (total 6.5s with phase 1)
+    setTimeout(() => {
+        quantumText.textContent = 'INITIATING DECELERATION';
+        wormhole.classList.remove('shaking'); // Stop shake for deceleration
+    }, 4200);
+    
+    // Flash and exit at 4.8 seconds (total 6.8s with phase 1)
     setTimeout(() => {
         clearInterval(quantumParticleInterval);
-        quantumFlash.style.animation = 'quantum-exit-flash 0.8s ease-out forwards';
-    }, 4500);
+        quantumFlash.style.animation = 'quantum-exit-flash 1s ease-out forwards';
+    }, 4800);
     
-    // Complete transition at 5 seconds (total 7s with phase 1)
+    // Complete transition at 5.5 seconds (total 7.5s with phase 1)
     setTimeout(() => {
         wormhole.classList.add('hidden');
-        wormhole.classList.remove('warp-active'); // Remove black background for next transition
+        wormhole.classList.remove('warp-active');
+        wormhole.classList.remove('shaking');
         quantumRealm.classList.remove('active');
+        quantumRealm.classList.remove('dest-solar', 'dest-alpha', 'dest-trappist');
         quantumText.classList.remove('visible');
         warpSpeed.classList.remove('visible');
+        destIndicator.classList.remove('visible');
         quantumFlash.style.animation = '';
         
         // Reset shuttle approach layer
         shuttleApproach.classList.add('hidden');
+        shuttleApproach.style.zIndex = '';
+        shuttle.style.transform = '';
+        shuttle.style.opacity = '';
+        shuttle.classList.remove('quantum-glow');
+        shuttle.classList.remove('approaching');
+        
+        // Hide distance indicator
+        const warpDistanceEl = document.getElementById('warp-distance');
+        if (warpDistanceEl) warpDistanceEl.classList.remove('visible');
+        
+        // Clean up particles
+        const particles = particlesContainer.querySelectorAll('.q-particle');
+        particles.forEach(p => p.remove());
+        
+        // Show destination
+        if (destination === 'solar-system') {
+            document.getElementById('solar-system').classList.remove('hidden');
+        } else if (destination === 'alpha-centauri') {
+            document.getElementById('alpha-centauri-system').classList.remove('hidden');
+            buildAlphaCentauriSystem();
+        } else if (destination === 'trappist') {
+            document.getElementById('trappist-system').classList.remove('hidden');
+            buildTrappistSystem();
+        }
+    }, 5500);
+}
         shuttleApproach.style.zIndex = '';
         shuttle.style.transform = '';
         shuttle.style.opacity = '';
@@ -1728,9 +1789,9 @@ function animateShuttleThroughQuantum(shuttle) {
     animate();
 }
 
-function createQuantumParticle(container) {
+function createQuantumParticle(container, destination) {
     const particle = document.createElement('div');
-    particle.className = 'q-particle';
+    particle.className = 'q-particle streak';
     
     // Star streaks come from center and fly outward
     const centerX = window.innerWidth / 2;
@@ -1740,30 +1801,44 @@ function createQuantumParticle(container) {
     const angle = Math.random() * Math.PI * 2;
     
     // Start position - slightly offset from center
-    const startOffset = 20 + Math.random() * 30;
+    const startOffset = 15 + Math.random() * 40;
     const startX = centerX + Math.cos(angle) * startOffset;
     const startY = centerY + Math.sin(angle) * startOffset;
     
     // Distance to travel
-    const distance = 400 + Math.random() * 600;
+    const distance = 500 + Math.random() * 800;
     const dx = Math.cos(angle) * distance;
     const dy = Math.sin(angle) * distance;
     
     // Streak dimensions - long and thin
-    const length = 30 + Math.random() * 80;
-    const width = 1 + Math.random() * 2;
+    const length = 40 + Math.random() * 120;
+    const width = 1 + Math.random() * 2.5;
     
-    // Slight blue-white color variation
-    const brightness = 180 + Math.floor(Math.random() * 75);
-    const blueShift = 200 + Math.floor(Math.random() * 55);
+    // Color based on destination
+    let r, g, b;
+    if (destination === 'trappist') {
+        // Warmer red-orange tones for TRAPPIST-1
+        r = 200 + Math.floor(Math.random() * 55);
+        g = 150 + Math.floor(Math.random() * 80);
+        b = 150 + Math.floor(Math.random() * 60);
+    } else if (destination === 'alpha-centauri') {
+        // Slightly golden tones for Alpha Centauri
+        r = 200 + Math.floor(Math.random() * 55);
+        g = 200 + Math.floor(Math.random() * 55);
+        b = 180 + Math.floor(Math.random() * 75);
+    } else {
+        // Blue-white for Solar System
+        r = 180 + Math.floor(Math.random() * 75);
+        g = 190 + Math.floor(Math.random() * 65);
+        b = 220 + Math.floor(Math.random() * 35);
+    }
     
     particle.style.left = startX + 'px';
     particle.style.top = startY + 'px';
     particle.style.width = length + 'px';
     particle.style.height = width + 'px';
-    particle.style.background = `linear-gradient(90deg, transparent 0%, rgba(${brightness}, ${brightness + 20}, ${blueShift}, 0.9) 30%, rgba(255, 255, 255, 1) 50%, rgba(${brightness}, ${brightness + 20}, ${blueShift}, 0.9) 70%, transparent 100%)`;
-    particle.style.borderRadius = '50%';
-    particle.style.boxShadow = `0 0 ${width * 2}px rgba(${brightness}, ${brightness + 20}, ${blueShift}, 0.5)`;
+    particle.style.setProperty('--streak-color', `rgba(${r}, ${g}, ${b}, 0.9)`);
+    particle.style.boxShadow = `0 0 ${width * 3}px rgba(${r}, ${g}, ${b}, 0.5)`;
     
     // Rotate to point in direction of travel
     const rotationDeg = (angle * 180 / Math.PI);
@@ -1772,12 +1847,56 @@ function createQuantumParticle(container) {
     
     particle.style.setProperty('--dx', dx + 'px');
     
-    const duration = 0.3 + Math.random() * 0.4;
+    const duration = 0.25 + Math.random() * 0.35;
     particle.style.animationDuration = duration + 's';
     
     container.appendChild(particle);
     
     // Remove after animation
+    setTimeout(() => {
+        particle.remove();
+    }, duration * 1000);
+}
+
+function createQuantumDot(container, destination) {
+    const particle = document.createElement('div');
+    particle.className = 'q-particle dot';
+    
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    
+    const angle = Math.random() * Math.PI * 2;
+    const startOffset = 30 + Math.random() * 60;
+    const startX = centerX + Math.cos(angle) * startOffset;
+    const startY = centerY + Math.sin(angle) * startOffset;
+    
+    const distance = 400 + Math.random() * 600;
+    const dx = Math.cos(angle) * distance;
+    
+    const size = 2 + Math.random() * 4;
+    
+    // Bright white/blue dots
+    let color;
+    if (destination === 'trappist') {
+        color = `rgba(255, ${200 + Math.floor(Math.random() * 55)}, ${180 + Math.floor(Math.random() * 75)}, 1)`;
+    } else {
+        color = `rgba(${220 + Math.floor(Math.random() * 35)}, ${230 + Math.floor(Math.random() * 25)}, 255, 1)`;
+    }
+    
+    particle.style.left = startX + 'px';
+    particle.style.top = startY + 'px';
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particle.style.setProperty('--dot-color', color);
+    particle.style.setProperty('--dot-glow', (size * 2) + 'px');
+    
+    particle.style.setProperty('--dx', dx + 'px');
+    
+    const duration = 0.4 + Math.random() * 0.4;
+    particle.style.animationDuration = duration + 's';
+    
+    container.appendChild(particle);
+    
     setTimeout(() => {
         particle.remove();
     }, duration * 1000);
