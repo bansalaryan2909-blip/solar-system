@@ -838,3 +838,47 @@ const TRAPPIST_1_PLANETS = [
         ]
     }
 ];
+
+
+// ===== APPLY EXPANDED MOON DATA =====
+// This replaces the basic moon data with the comprehensive moon arrays from moons-data.js
+// The moons-data.js file must be loaded before app.js
+
+// Helper function to apply moon data after moons-data.js is loaded
+function applyExpandedMoonData() {
+    if (typeof JUPITER_MOONS !== 'undefined') {
+        // Find Jupiter and replace its moons
+        const jupiter = PLANETS.find(p => p.name === 'Jupiter');
+        if (jupiter) jupiter.moons = JUPITER_MOONS;
+    }
+    
+    if (typeof SATURN_MOONS !== 'undefined') {
+        const saturn = PLANETS.find(p => p.name === 'Saturn');
+        if (saturn) saturn.moons = SATURN_MOONS;
+    }
+    
+    if (typeof URANUS_MOONS !== 'undefined') {
+        const uranus = PLANETS.find(p => p.name === 'Uranus');
+        if (uranus) uranus.moons = URANUS_MOONS;
+    }
+    
+    if (typeof NEPTUNE_MOONS !== 'undefined') {
+        const neptune = PLANETS.find(p => p.name === 'Neptune');
+        if (neptune) neptune.moons = NEPTUNE_MOONS;
+    }
+    
+    if (typeof PLUTO_MOONS !== 'undefined') {
+        const pluto = PLANETS.find(p => p.name === 'Pluto');
+        if (pluto) pluto.moons = PLUTO_MOONS;
+    }
+    
+    if (typeof MARS_MOONS !== 'undefined') {
+        const mars = PLANETS.find(p => p.name === 'Mars');
+        if (mars) mars.moons = MARS_MOONS;
+    }
+    
+    if (typeof EARTH_MOONS !== 'undefined') {
+        const earth = PLANETS.find(p => p.name === 'Earth');
+        if (earth) earth.moons = EARTH_MOONS;
+    }
+}
