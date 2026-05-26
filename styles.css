@@ -2007,37 +2007,41 @@ html, body {
     overflow: visible;
 }
 
-/* Kiro Logo on rocket body */
+/* Kiro Ghost Logo on rocket body */
 .craft-body::before {
-    content: 'K';
+    content: '';
     position: absolute;
-    top: 35px;
+    top: 30px;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #1a73e8;
-    text-shadow: 
-        0 0 5px rgba(26, 115, 232, 0.8),
-        0 0 10px rgba(26, 115, 232, 0.5);
+    width: 20px;
+    height: 24px;
+    background: 
+        /* Ghost head */
+        radial-gradient(ellipse 100% 80% at 50% 30%, #1a73e8 0%, #1a73e8 60%, transparent 61%),
+        /* Ghost body wavy bottom */
+        radial-gradient(circle at 20% 100%, transparent 40%, #1a73e8 41%, #1a73e8 60%, transparent 61%),
+        radial-gradient(circle at 50% 100%, transparent 40%, #1a73e8 41%, #1a73e8 60%, transparent 61%),
+        radial-gradient(circle at 80% 100%, transparent 40%, #1a73e8 41%, #1a73e8 60%, transparent 61%);
+    filter: drop-shadow(0 0 4px rgba(26, 115, 232, 0.9)) drop-shadow(0 0 8px rgba(26, 115, 232, 0.6));
     z-index: 10;
 }
 
-/* Kiro accent stripe */
+/* Ghost eyes */
 .craft-body::after {
     content: '';
     position: absolute;
-    top: 25px;
+    top: 34px;
     left: 50%;
     transform: translateX(-50%);
-    width: 28px;
-    height: 50px;
-    border: 2px solid rgba(26, 115, 232, 0.6);
-    border-radius: 8px;
-    background: linear-gradient(180deg,
-        rgba(26, 115, 232, 0.1) 0%,
-        rgba(26, 115, 232, 0.05) 100%);
+    width: 14px;
+    height: 8px;
+    background: 
+        /* Left eye */
+        radial-gradient(ellipse at 25% 50%, #fff 0%, #fff 35%, transparent 36%),
+        /* Right eye */
+        radial-gradient(ellipse at 75% 50%, #fff 0%, #fff 35%, transparent 36%);
+    z-index: 11;
 }
 
 .craft-cockpit {
@@ -2214,10 +2218,16 @@ html, body {
 }
 
 .shuttle-craft.quantum-glow .craft-body::before {
-    color: #80c0ff;
-    text-shadow: 
-        0 0 10px rgba(128, 192, 255, 1),
-        0 0 20px rgba(128, 192, 255, 0.8);
+    filter: drop-shadow(0 0 8px rgba(128, 192, 255, 1)) 
+            drop-shadow(0 0 16px rgba(128, 192, 255, 0.8))
+            drop-shadow(0 0 24px rgba(150, 200, 255, 0.6));
+    background: 
+        /* Ghost head - glowing */
+        radial-gradient(ellipse 100% 80% at 50% 30%, #80c0ff 0%, #80c0ff 60%, transparent 61%),
+        /* Ghost body wavy bottom */
+        radial-gradient(circle at 20% 100%, transparent 40%, #80c0ff 41%, #80c0ff 60%, transparent 61%),
+        radial-gradient(circle at 50% 100%, transparent 40%, #80c0ff 41%, #80c0ff 60%, transparent 61%),
+        radial-gradient(circle at 80% 100%, transparent 40%, #80c0ff 41%, #80c0ff 60%, transparent 61%);
 }
 
 .shuttle-craft.quantum-glow .craft-engine {
