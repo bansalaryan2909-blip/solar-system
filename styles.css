@@ -1580,6 +1580,8 @@ html, body {
     pointer-events: all;
     transition: transform 0.25s ease, filter 0.25s ease;
     transform: translate(-50%, -50%);
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
 }
 
 .trappist-planet:hover {

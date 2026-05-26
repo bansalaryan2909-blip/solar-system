@@ -663,10 +663,10 @@ const TRAPPIST_1_PLANETS = [
         name: "TRAPPIST-1 b",
         subtitle: "The Innermost World",
         classification: ["Rocky Exoplanet", "Tidally Locked", "Too Hot for Life"],
-        gradient: "radial-gradient(circle at 35% 35%, #a08070, #806050 30%, #604030 55%, #402820 75%, #201410)",
-        glow: "rgba(120, 80, 60, 0.08)",
-        orbitRadius: 45,
-        size: 11,
+        gradient: "radial-gradient(circle at 35% 35%, #c8a090, #a07860 30%, #805840 55%, #503020 75%, #281810)",
+        glow: "rgba(160, 100, 80, 0.15)",
+        orbitRadius: 55,
+        size: 18,
         facts: [
             { icon: "🔥", text: "TRAPPIST-1 b is the innermost planet, orbiting just 0.011 AU from its star — 35 times closer than Mercury to our Sun." },
             { icon: "⏱️", text: "A year on TRAPPIST-1 b lasts only 1.51 Earth days. You'd celebrate over 240 birthdays per Earth year." },
@@ -675,16 +675,23 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🌍", text: "TRAPPIST-1 b is about 1.02 times Earth's diameter and 1.37 times its mass — slightly larger and denser than Earth." },
             { icon: "💨", text: "James Webb observations in 2023 found no evidence of an atmosphere — likely stripped away by stellar radiation." },
             { icon: "🌋", text: "The intense tidal forces from the nearby star may drive volcanic activity on this world." }
+        ],
+        history: [
+            { heading: "Discovery — 2016", text: "TRAPPIST-1 b was among the first three planets discovered around TRAPPIST-1 in 2016 using the TRAPPIST telescope in Chile. The discovery was made by detecting the tiny dip in starlight as the planet passed in front of its star." },
+            { heading: "Confirmation — 2017", text: "NASA's Spitzer Space Telescope confirmed TRAPPIST-1 b's existence in February 2017 as part of the landmark announcement of seven Earth-sized planets. Its orbital period was precisely measured at 1.51 days." },
+            { heading: "JWST Observations — 2023", text: "The James Webb Space Telescope observed TRAPPIST-1 b in 2023, measuring its thermal emission. The results showed the planet's dayside temperature matches predictions for a bare rock with no atmosphere." },
+            { heading: "No Atmosphere Detected", text: "JWST's observations strongly suggest TRAPPIST-1 b has no substantial atmosphere. The intense radiation from the nearby star has likely stripped away any gases that once existed, leaving a barren, scorched world." },
+            { heading: "Tidal Heating", text: "Scientists believe TRAPPIST-1 b experiences significant tidal heating from its star's gravitational pull. This could drive volcanic activity, potentially resurfacing the planet and releasing gases — though any atmosphere would quickly be lost to space." }
         ]
     },
     {
         name: "TRAPPIST-1 c",
         subtitle: "The Venus Analog",
         classification: ["Rocky Exoplanet", "Tidally Locked", "Possible Thick Atmosphere"],
-        gradient: "radial-gradient(circle at 35% 35%, #c8a878, #a08050 30%, #806030 55%, #604020 75%, #302010)",
-        glow: "rgba(160, 120, 60, 0.08)",
-        orbitRadius: 60,
-        size: 11,
+        gradient: "radial-gradient(circle at 35% 35%, #e0c090, #c09860 30%, #a07840 55%, #705020 75%, #402810)",
+        glow: "rgba(200, 150, 80, 0.15)",
+        orbitRadius: 75,
+        size: 19,
         facts: [
             { icon: "🌡️", text: "TRAPPIST-1 c receives about twice the radiation Earth gets from the Sun, making it similar to Venus in terms of heating." },
             { icon: "⏱️", text: "Orbital period is 2.42 Earth days — completing over 150 orbits per Earth year." },
@@ -693,16 +700,23 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🔒", text: "Like all TRAPPIST-1 planets, it's tidally locked with permanent day and night sides." },
             { icon: "🌋", text: "If it has volcanic activity, it could potentially replenish a thin atmosphere over time." },
             { icon: "👀", text: "From TRAPPIST-1 c, neighboring planets would appear several times larger than our Moon in the sky." }
+        ],
+        history: [
+            { heading: "Discovery — 2016", text: "TRAPPIST-1 c was discovered alongside planets b and d in 2016 by the TRAPPIST survey. It was identified through the transit method, detecting the characteristic dimming pattern as it crossed in front of its star." },
+            { heading: "The Venus Connection", text: "Early analysis suggested TRAPPIST-1 c receives similar stellar radiation to Venus in our solar system. This led scientists to speculate it might have a thick, Venus-like atmosphere with extreme greenhouse heating." },
+            { heading: "JWST Breakthrough — 2023", text: "James Webb Space Telescope observations in 2023 measured TRAPPIST-1 c's thermal emission during secondary eclipse. The data revealed the planet is likely bare rock or has only a very thin atmosphere." },
+            { heading: "Ruling Out Venus-Like Conditions", text: "JWST results showed TRAPPIST-1 c's dayside temperature is consistent with no atmosphere, ruling out a thick Venus-like CO2 atmosphere. This was a significant finding for understanding rocky exoplanet atmospheres." },
+            { heading: "Ongoing Research", text: "Scientists continue to study TRAPPIST-1 c to understand why it lost its atmosphere. The intense stellar activity of red dwarf stars may strip atmospheres from close-in planets over billions of years." }
         ]
     },
     {
         name: "TRAPPIST-1 d",
         subtitle: "The Inner Edge",
         classification: ["Rocky Exoplanet", "Inner Habitable Zone", "Possible Water World"],
-        gradient: "radial-gradient(circle at 35% 35%, #90a8c0, #6080a0 30%, #405880 55%, #203860 75%, #101830)",
-        glow: "rgba(80, 120, 160, 0.08)",
-        orbitRadius: 78,
-        size: 8,
+        gradient: "radial-gradient(circle at 35% 35%, #a8c0d8, #7898b8 30%, #506890 55%, #304068 75%, #182038)",
+        glow: "rgba(100, 150, 200, 0.15)",
+        orbitRadius: 100,
+        size: 14,
         facts: [
             { icon: "💧", text: "TRAPPIST-1 d sits at the inner edge of the habitable zone — it could potentially have liquid water if it has the right atmosphere." },
             { icon: "⏱️", text: "A year lasts just 4.05 Earth days. The planet whips around its star at incredible speed." },
@@ -711,16 +725,23 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🌊", text: "Models suggest TRAPPIST-1 d could be a water world with deep global oceans, if it retained water." },
             { icon: "🔒", text: "Tidally locked, but atmospheric circulation could distribute heat to the dark side." },
             { icon: "🌅", text: "The star would appear 5 times larger in the sky than our Sun appears from Earth." }
+        ],
+        history: [
+            { heading: "Discovery — 2016", text: "TRAPPIST-1 d was one of the original three planets discovered in 2016. Its position at the inner edge of the habitable zone immediately made it a target of interest for habitability studies." },
+            { heading: "Refined Measurements — 2017", text: "The 2017 Spitzer observations refined TRAPPIST-1 d's properties, revealing it to be the smallest of the seven planets. Its low mass suggests it may have a significant water content." },
+            { heading: "Water World Hypothesis", text: "Computer models suggest TRAPPIST-1 d could be a water world — a planet with deep global oceans covering its entire surface. If it retained water from its formation, oceans could be hundreds of kilometers deep." },
+            { heading: "Habitable Zone Position", text: "TRAPPIST-1 d sits at the inner edge of the habitable zone. With the right atmospheric conditions, liquid water could exist on its surface, though it may be too warm for Earth-like conditions." },
+            { heading: "Future JWST Targets", text: "TRAPPIST-1 d is scheduled for atmospheric observations with JWST. Scientists hope to detect signs of water vapor or other molecules that could indicate habitability." }
         ]
     },
     {
         name: "TRAPPIST-1 e",
         subtitle: "The Most Earth-Like",
         classification: ["Rocky Exoplanet", "Habitable Zone", "Best Candidate for Life"],
-        gradient: "radial-gradient(circle at 35% 35%, #7090b0, #507090 30%, #305070 55%, #183050 75%, #081828)",
-        glow: "rgba(60, 100, 140, 0.1)",
-        orbitRadius: 98,
-        size: 10,
+        gradient: "radial-gradient(circle at 35% 35%, #88a8c8, #6088a8 30%, #406080 55%, #284058 75%, #102030)",
+        glow: "rgba(80, 130, 180, 0.2)",
+        orbitRadius: 130,
+        size: 17,
         facts: [
             { icon: "🏆", text: "TRAPPIST-1 e is considered the most likely of the seven planets to harbor life — it's the most Earth-like world known." },
             { icon: "🌡️", text: "Located in the middle of the habitable zone, TRAPPIST-1 e receives similar radiation to what Earth receives from the Sun." },
@@ -730,16 +751,24 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🛡️", text: "The planet may have a magnetic field that could protect a potential atmosphere from stellar wind." },
             { icon: "🔭", text: "TRAPPIST-1 e is a prime target for James Webb Space Telescope atmospheric studies." },
             { icon: "🌌", text: "From TRAPPIST-1 e, you could see all six sibling planets with the naked eye, some appearing larger than the Moon." }
+        ],
+        history: [
+            { heading: "Discovery — 2017", text: "TRAPPIST-1 e was discovered in February 2017 as part of the expanded survey using NASA's Spitzer Space Telescope. It immediately stood out as the most promising candidate for habitability." },
+            { heading: "The Goldilocks Planet", text: "TRAPPIST-1 e sits in the 'Goldilocks zone' — not too hot, not too cold. It receives about 60% of the light Earth gets from the Sun, but the star's redder spectrum means similar heating." },
+            { heading: "Earth's Twin?", text: "With 92% of Earth's diameter and 77% of its mass, TRAPPIST-1 e is the most Earth-like exoplanet discovered. Its density suggests a rocky composition similar to Earth's." },
+            { heading: "Atmospheric Hopes", text: "Unlike the inner planets, TRAPPIST-1 e may have retained an atmosphere. Its position in the habitable zone and Earth-like properties make it the top priority for JWST atmospheric studies." },
+            { heading: "The Search for Biosignatures", text: "Scientists hope to detect biosignatures — chemical signs of life — in TRAPPIST-1 e's atmosphere. Oxygen, methane, or ozone could indicate biological processes, though false positives must be ruled out." },
+            { heading: "A Window to Alien Life", text: "TRAPPIST-1 e represents humanity's best current chance of finding life beyond Earth. If it has oceans and an atmosphere, the conditions for life as we know it could exist just 40 light-years away." }
         ]
     },
     {
         name: "TRAPPIST-1 f",
         subtitle: "The Frozen Possibility",
         classification: ["Rocky Exoplanet", "Outer Habitable Zone", "Possible Ice World"],
-        gradient: "radial-gradient(circle at 35% 35%, #a0b8d0, #7090b0 30%, #506888 55%, #304060 75%, #182030)",
-        glow: "rgba(100, 140, 180, 0.08)",
-        orbitRadius: 120,
-        size: 11,
+        gradient: "radial-gradient(circle at 35% 35%, #b8d0e8, #88a8c8 30%, #6080a0 55%, #405070 75%, #202838)",
+        glow: "rgba(130, 170, 210, 0.15)",
+        orbitRadius: 160,
+        size: 18,
         facts: [
             { icon: "❄️", text: "TRAPPIST-1 f lies in the outer habitable zone — it could have liquid water with a thick greenhouse atmosphere." },
             { icon: "🌍", text: "At 1.04 times Earth's diameter and 0.93 times its mass, TRAPPIST-1 f is almost Earth's twin in size." },
@@ -748,16 +777,23 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🌊", text: "Models suggest it could have a deep subsurface ocean beneath an icy crust." },
             { icon: "🔒", text: "Tidally locked, with the star-facing side potentially warmer and the dark side frozen solid." },
             { icon: "🌅", text: "The star would appear about 3 times larger than our Sun from Earth, glowing a deep red-orange." }
+        ],
+        history: [
+            { heading: "Discovery — 2017", text: "TRAPPIST-1 f was discovered in February 2017 during the extended Spitzer observations. Its position in the outer habitable zone made it an intriguing target for habitability studies." },
+            { heading: "An Icy Possibility", text: "TRAPPIST-1 f receives about 40% of the light Earth gets from the Sun. Without a greenhouse atmosphere, it would be frozen — but with the right atmosphere, liquid water could exist." },
+            { heading: "Earth-Sized Twin", text: "At 1.04 times Earth's diameter, TRAPPIST-1 f is almost exactly Earth's size. Its slightly lower mass suggests it may have more water or ice than Earth." },
+            { heading: "Subsurface Ocean?", text: "Like Jupiter's moon Europa, TRAPPIST-1 f could harbor a subsurface ocean beneath an icy shell. Tidal heating from the star and neighboring planets could keep water liquid below the surface." },
+            { heading: "Atmospheric Studies", text: "JWST will study TRAPPIST-1 f's atmosphere to determine if it has the greenhouse gases needed to warm its surface. A thick CO2 atmosphere could make it habitable despite its distance from the star." }
         ]
     },
     {
         name: "TRAPPIST-1 g",
         subtitle: "The Outer Giant",
         classification: ["Rocky Exoplanet", "Outer Habitable Zone", "Largest of the Seven"],
-        gradient: "radial-gradient(circle at 35% 35%, #8898a8, #607080 30%, #404858 55%, #282838 75%, #101018)",
-        glow: "rgba(80, 100, 120, 0.08)",
-        orbitRadius: 145,
-        size: 12,
+        gradient: "radial-gradient(circle at 35% 35%, #98a8b8, #708090 30%, #505868 55%, #303840 75%, #181820)",
+        glow: "rgba(100, 120, 150, 0.15)",
+        orbitRadius: 195,
+        size: 20,
         facts: [
             { icon: "👑", text: "TRAPPIST-1 g is the largest of the seven planets at 1.13 times Earth's diameter." },
             { icon: "⚖️", text: "Despite being the largest, it has only 1.15 times Earth's mass, suggesting a lower density — possibly more water/ice." },
@@ -766,16 +802,23 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🌊", text: "TRAPPIST-1 g may be an ocean world with a thick ice shell and a liquid water layer beneath." },
             { icon: "🔒", text: "Tidally locked like its siblings, with extreme temperature differences between hemispheres." },
             { icon: "🌌", text: "From TRAPPIST-1 g, the inner planets would transit across the star frequently, creating mini-eclipses." }
+        ],
+        history: [
+            { heading: "Discovery — 2017", text: "TRAPPIST-1 g was discovered in February 2017 as part of the seven-planet announcement. As the largest planet in the system, it immediately drew scientific interest." },
+            { heading: "The Largest Sibling", text: "At 1.13 times Earth's diameter, TRAPPIST-1 g is the biggest of the seven worlds. However, its relatively low density suggests it contains significant amounts of water or ice." },
+            { heading: "An Ocean World?", text: "Models suggest TRAPPIST-1 g could be a water world with oceans hundreds of kilometers deep. The water may exist as high-pressure ice beneath a liquid layer, similar to some moons in our solar system." },
+            { heading: "Outer Habitable Zone", text: "TRAPPIST-1 g sits at the outer edge of the habitable zone. While likely too cold for surface liquid water without a thick atmosphere, subsurface oceans could exist." },
+            { heading: "Resonant Orbit", text: "TRAPPIST-1 g is locked in orbital resonance with its neighbors. For every 2 orbits of planet f, planet g completes 3 — a gravitational dance that has kept the system stable for billions of years." }
         ]
     },
     {
         name: "TRAPPIST-1 h",
         subtitle: "The Outermost Frontier",
         classification: ["Rocky Exoplanet", "Beyond Habitable Zone", "Frozen World"],
-        gradient: "radial-gradient(circle at 35% 35%, #606878, #404858 30%, #282838 55%, #181820 75%, #080808)",
-        glow: "rgba(60, 70, 80, 0.08)",
-        orbitRadius: 175,
-        size: 8,
+        gradient: "radial-gradient(circle at 35% 35%, #788898, #586878 30%, #384050 55%, #202830 75%, #101418)",
+        glow: "rgba(80, 100, 120, 0.12)",
+        orbitRadius: 235,
+        size: 14,
         facts: [
             { icon: "🥶", text: "TRAPPIST-1 h is the outermost and coldest planet, receiving only 13% of the light Earth gets from the Sun." },
             { icon: "⏱️", text: "Orbital period is 18.77 Earth days — the longest year in the TRAPPIST-1 system." },
@@ -785,6 +828,13 @@ const TRAPPIST_1_PLANETS = [
             { icon: "🔒", text: "Tidally locked, with the dark side even colder than the already frigid day side." },
             { icon: "🌅", text: "The star would appear only slightly larger than our Sun from Earth, but much dimmer and redder." },
             { icon: "🛸", text: "Despite being frozen, TRAPPIST-1 h remains scientifically interesting as a potential analog to icy moons in our solar system." }
+        ],
+        history: [
+            { heading: "Discovery — 2017", text: "TRAPPIST-1 h was the last of the seven planets to be confirmed, announced in February 2017. Its longer orbital period made it harder to detect, requiring extended observations with the Spitzer Space Telescope." },
+            { heading: "The Outer Frontier", text: "TRAPPIST-1 h orbits at the outer edge of the system, receiving only 13% of the light Earth gets from the Sun. It's a frozen world, but its position makes it scientifically valuable for understanding planetary system architecture." },
+            { heading: "Completing the Resonance Chain", text: "TRAPPIST-1 h completes the remarkable orbital resonance chain of the system. Its orbit is locked in a 3:2 ratio with planet g, meaning for every 2 orbits of h, planet g completes 3." },
+            { heading: "An Icy Moon Analog", text: "Scientists compare TRAPPIST-1 h to icy moons in our solar system like Europa and Enceladus. Despite surface temperatures around -100°C, tidal heating could maintain a subsurface liquid water ocean." },
+            { heading: "Future Exploration", text: "While TRAPPIST-1 h is too cold for surface habitability, it remains a target for future study. Understanding its composition and potential subsurface ocean could reveal how water is distributed in compact planetary systems." }
         ]
     }
 ];

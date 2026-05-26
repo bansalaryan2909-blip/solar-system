@@ -1014,6 +1014,23 @@ document.getElementById('btn-see-history').addEventListener('click', () => {
 });
 
 function showHistorySlide() {
+    // Handle TRAPPIST-1 planet history
+    if (viewingTarget === 'trappist-planet') {
+        const planet = TRAPPIST_1_PLANETS[currentTrappistPlanetIndex];
+        const slide = planet.history[currentHistorySlide];
+
+        const icon = document.getElementById('history-planet-icon');
+        icon.style.background = planet.gradient;
+        icon.style.boxShadow = `0 0 25px ${planet.glow}`;
+
+        document.getElementById('history-title').textContent = `${planet.name} — Discovery & Research`;
+        document.getElementById('history-slide').innerHTML = `<div class="history-slide-heading">${slide.heading}</div><p>${slide.text}</p>`;
+        document.getElementById('history-counter').textContent = `${currentHistorySlide + 1} / ${planet.history.length}`;
+        document.getElementById('btn-history-prev').disabled = currentHistorySlide === 0;
+        document.getElementById('btn-history-next').disabled = currentHistorySlide === planet.history.length - 1;
+        return;
+    }
+
     // Handle TRAPPIST-1 star history
     if (viewingTarget === 'trappist-star') {
         const slide = TRAPPIST_1_STAR.history[currentTrappistHistorySlide];
@@ -1075,7 +1092,9 @@ function showHistorySlide() {
 }
 
 document.getElementById('btn-history-prev').addEventListener('click', () => {
-    if (viewingTarget === 'trappist-star') {
+    if (viewingTarget === 'trappist-planet') {
+        if (currentHistorySlide > 0) { currentHistorySlide--; showHistorySlide(); }
+    } else if (viewingTarget === 'trappist-star') {
         if (currentTrappistHistorySlide > 0) { currentTrappistHistorySlide--; showHistorySlide(); }
     } else if (viewingTarget === 'ac-star') {
         if (currentACHistorySlide > 0) { currentACHistorySlide--; showHistorySlide(); }
@@ -1084,7 +1103,10 @@ document.getElementById('btn-history-prev').addEventListener('click', () => {
     }
 });
 document.getElementById('btn-history-next').addEventListener('click', () => {
-    if (viewingTarget === 'trappist-star') {
+    if (viewingTarget === 'trappist-planet') {
+        const planet = TRAPPIST_1_PLANETS[currentTrappistPlanetIndex];
+        if (currentHistorySlide < planet.history.length - 1) { currentHistorySlide++; showHistorySlide(); }
+    } else if (viewingTarget === 'trappist-star') {
         if (currentTrappistHistorySlide < TRAPPIST_1_STAR.history.length - 1) { currentTrappistHistorySlide++; showHistorySlide(); }
     } else if (viewingTarget === 'ac-star') {
         const star = ALPHA_CENTAURI_STARS[currentACStarIndex];
@@ -1096,7 +1118,9 @@ document.getElementById('btn-history-next').addEventListener('click', () => {
 });
 document.getElementById('btn-exit-history').addEventListener('click', () => {
     document.getElementById('history-viewer').classList.add('hidden');
-    if (viewingTarget === 'trappist-star') {
+    if (viewingTarget === 'trappist-planet') {
+        document.getElementById('trappist-planet-detail').classList.remove('hidden');
+    } else if (viewingTarget === 'trappist-star') {
         document.getElementById('trappist-planet-detail').classList.remove('hidden');
     } else if (viewingTarget === 'ac-star') {
         document.getElementById('ac-star-detail').classList.remove('hidden');
@@ -2526,7 +2550,8 @@ function buildTrappistSystem() {
         planetEl.style.width = planet.size + 'px';
         planetEl.style.height = planet.size + 'px';
         planetEl.style.background = planet.gradient;
-        planetEl.style.boxShadow = `0 0 ${planet.size * 0.5}px ${planet.glow}, inset -${planet.size * 0.15}px -${planet.size * 0.1}px ${planet.size * 0.3}px rgba(0,0,0,0.5)`;
+        // Sharper shadows - reduced blur radius for crisp appearance
+        planetEl.style.boxShadow = `0 0 ${planet.size * 0.3}px ${planet.glow}, inset -${planet.size * 0.12}px -${planet.size * 0.08}px ${planet.size * 0.15}px rgba(0,0,0,0.6)`;
 
         planetEl.addEventListener('click', (e) => {
             if (trappistDidDrag) return;
@@ -2538,7 +2563,7 @@ function buildTrappistSystem() {
         const label = document.createElement('div');
         label.className = 'trappist-planet-label';
         label.textContent = planet.name.replace('TRAPPIST-1 ', '');
-        label.style.top = (planet.size / 2 + 8) + 'px';
+        label.style.top = (planet.size / 2 + 10) + 'px';
 
         wrapper.appendChild(planetEl);
         wrapper.appendChild(label);
@@ -2701,10 +2726,19 @@ function openTrappistPlanetDetail(index) {
         factsList.appendChild(item);
     });
 
-    // Hide actions section for planets (only show for star)
+    // Show history button if planet has history
     const actionsEl = document.getElementById('trappist-star-actions');
     actionsEl.innerHTML = '';
-    actionsEl.style.display = 'none';
+    if (planet.history && planet.history.length > 0) {
+        actionsEl.style.display = 'flex';
+        const historyBtn = document.createElement('button');
+        historyBtn.className = 'btn-action btn-action-alt';
+        historyBtn.innerHTML = '<span class="btn-action-icon">◷</span> Discovery History';
+        historyBtn.addEventListener('click', () => showTrappistPlanetHistory(index));
+        actionsEl.appendChild(historyBtn);
+    } else {
+        actionsEl.style.display = 'none';
+    }
 
     // Navigation
     document.getElementById('trappist-planet-counter').textContent = `${index + 1} / ${TRAPPIST_1_PLANETS.length}`;
@@ -2712,6 +2746,26 @@ function openTrappistPlanetDetail(index) {
     document.getElementById('btn-trappist-next').style.visibility = 'visible';
     document.getElementById('btn-trappist-prev').disabled = index === 0;
     document.getElementById('btn-trappist-next').disabled = index === TRAPPIST_1_PLANETS.length - 1;
+}
+
+// Show TRAPPIST-1 planet history
+function showTrappistPlanetHistory(index) {
+    const planet = TRAPPIST_1_PLANETS[index];
+    if (!planet.history || planet.history.length === 0) return;
+    
+    viewingTarget = 'trappist-planet';
+    currentHistorySlide = 0;
+    
+    document.getElementById('trappist-planet-detail').classList.add('hidden');
+    document.getElementById('history-viewer').classList.remove('hidden');
+    
+    // Create stars
+    const historyStars = document.getElementById('history-stars');
+    historyStars.innerHTML = '';
+    historyStars.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    createStars('history-stars');
+    
+    showHistorySlide();
 }
 
 // TRAPPIST-1 planet navigation
