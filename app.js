@@ -1,3 +1,141 @@
+// ===== SPACE TRAVEL AUDIO =====
+let audioContext = null;
+let warpSoundPlaying = false;
+
+function initAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioContext;
+}
+
+function playWarpSound() {
+    if (warpSoundPlaying) return;
+    warpSoundPlaying = true;
+    
+    const ctx = initAudioContext();
+    if (ctx.state === 'suspended') {
+        ctx.resume();
+    }
+    
+    const duration = 7; // Match warp duration
+    const now = ctx.currentTime;
+    
+    // Create master gain for overall volume control
+    const masterGain = ctx.createGain();
+    masterGain.connect(ctx.destination);
+    masterGain.gain.setValueAtTime(0.3, now);
+    
+    // === Layer 1: Deep rumble (engine bass) ===
+    const rumbleOsc = ctx.createOscillator();
+    const rumbleGain = ctx.createGain();
+    rumbleOsc.type = 'sawtooth';
+    rumbleOsc.frequency.setValueAtTime(40, now);
+    rumbleOsc.frequency.linearRampToValueAtTime(80, now + 2);
+    rumbleOsc.frequency.linearRampToValueAtTime(60, now + duration);
+    rumbleGain.gain.setValueAtTime(0, now);
+    rumbleGain.gain.linearRampToValueAtTime(0.4, now + 0.5);
+    rumbleGain.gain.setValueAtTime(0.4, now + duration - 1);
+    rumbleGain.gain.linearRampToValueAtTime(0, now + duration);
+    rumbleOsc.connect(rumbleGain);
+    rumbleGain.connect(masterGain);
+    rumbleOsc.start(now);
+    rumbleOsc.stop(now + duration);
+    
+    // === Layer 2: Warp whoosh (rising pitch) ===
+    const whooshOsc = ctx.createOscillator();
+    const whooshGain = ctx.createGain();
+    const whooshFilter = ctx.createBiquadFilter();
+    whooshOsc.type = 'sawtooth';
+    whooshOsc.frequency.setValueAtTime(100, now);
+    whooshOsc.frequency.exponentialRampToValueAtTime(800, now + 2);
+    whooshOsc.frequency.exponentialRampToValueAtTime(200, now + duration);
+    whooshFilter.type = 'lowpass';
+    whooshFilter.frequency.setValueAtTime(500, now);
+    whooshFilter.frequency.linearRampToValueAtTime(2000, now + 2);
+    whooshFilter.frequency.linearRampToValueAtTime(800, now + duration);
+    whooshGain.gain.setValueAtTime(0, now);
+    whooshGain.gain.linearRampToValueAtTime(0.15, now + 1);
+    whooshGain.gain.setValueAtTime(0.15, now + duration - 1.5);
+    whooshGain.gain.linearRampToValueAtTime(0, now + duration);
+    whooshOsc.connect(whooshFilter);
+    whooshFilter.connect(whooshGain);
+    whooshGain.connect(masterGain);
+    whooshOsc.start(now);
+    whooshOsc.stop(now + duration);
+    
+    // === Layer 3: High-frequency shimmer (stars passing) ===
+    const shimmerOsc = ctx.createOscillator();
+    const shimmerGain = ctx.createGain();
+    shimmerOsc.type = 'sine';
+    shimmerOsc.frequency.setValueAtTime(2000, now);
+    shimmerOsc.frequency.linearRampToValueAtTime(4000, now + 2);
+    shimmerOsc.frequency.linearRampToValueAtTime(1500, now + duration);
+    shimmerGain.gain.setValueAtTime(0, now);
+    shimmerGain.gain.linearRampToValueAtTime(0.05, now + 2);
+    shimmerGain.gain.setValueAtTime(0.05, now + duration - 1);
+    shimmerGain.gain.linearRampToValueAtTime(0, now + duration);
+    shimmerOsc.connect(shimmerGain);
+    shimmerGain.connect(masterGain);
+    shimmerOsc.start(now);
+    shimmerOsc.stop(now + duration);
+    
+    // === Layer 4: White noise for "space wind" effect ===
+    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseData.length; i++) {
+        noiseData[i] = Math.random() * 2 - 1;
+    }
+    const noiseSource = ctx.createBufferSource();
+    const noiseGain = ctx.createGain();
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseSource.buffer = noiseBuffer;
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(1000, now);
+    noiseFilter.frequency.linearRampToValueAtTime(3000, now + 2);
+    noiseFilter.frequency.linearRampToValueAtTime(1500, now + duration);
+    noiseFilter.Q.value = 0.5;
+    noiseGain.gain.setValueAtTime(0, now);
+    noiseGain.gain.linearRampToValueAtTime(0.08, now + 1);
+    noiseGain.gain.setValueAtTime(0.08, now + duration - 1);
+    noiseGain.gain.linearRampToValueAtTime(0, now + duration);
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(masterGain);
+    noiseSource.start(now);
+    noiseSource.stop(now + duration);
+    
+    // === Layer 5: Pulsing hum (quantum drive) ===
+    const pulseOsc = ctx.createOscillator();
+    const pulseGain = ctx.createGain();
+    const pulseLFO = ctx.createOscillator();
+    const pulseLFOGain = ctx.createGain();
+    pulseOsc.type = 'triangle';
+    pulseOsc.frequency.setValueAtTime(150, now);
+    pulseLFO.type = 'sine';
+    pulseLFO.frequency.setValueAtTime(4, now);
+    pulseLFO.frequency.linearRampToValueAtTime(12, now + 2);
+    pulseLFO.frequency.linearRampToValueAtTime(6, now + duration);
+    pulseLFOGain.gain.value = 0.3;
+    pulseLFO.connect(pulseLFOGain);
+    pulseLFOGain.connect(pulseGain.gain);
+    pulseGain.gain.setValueAtTime(0.1, now);
+    pulseGain.gain.linearRampToValueAtTime(0.2, now + 2);
+    pulseGain.gain.setValueAtTime(0.2, now + duration - 1);
+    pulseGain.gain.linearRampToValueAtTime(0, now + duration);
+    pulseOsc.connect(pulseGain);
+    pulseGain.connect(masterGain);
+    pulseOsc.start(now);
+    pulseLFO.start(now);
+    pulseOsc.stop(now + duration);
+    pulseLFO.stop(now + duration);
+    
+    // Reset flag after sound ends
+    setTimeout(() => {
+        warpSoundPlaying = false;
+    }, duration * 1000);
+}
+
 // ===== PAN & ZOOM WITH MOMENTUM =====
 let panX = 0, panY = 0, zoomLevel = 1;
 let isDragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
@@ -1375,6 +1513,9 @@ function startWormholeTransition(destination, destinationName) {
         clearInterval(quantumParticleInterval);
         quantumParticleInterval = null;
     }
+    
+    // Start the warp sound effect
+    playWarpSound();
     
     const wormhole = document.getElementById('wormhole-transition');
     const shuttleApproach = document.getElementById('shuttle-approach');
