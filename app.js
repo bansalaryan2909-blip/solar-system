@@ -18,117 +18,206 @@ function playWarpSound() {
         ctx.resume();
     }
     
-    const duration = 7; // Match warp duration
+    const duration = 7;
     const now = ctx.currentTime;
     
-    // Create master gain for overall volume control
+    // Master gain
     const masterGain = ctx.createGain();
     masterGain.connect(ctx.destination);
-    masterGain.gain.setValueAtTime(0.3, now);
+    masterGain.gain.setValueAtTime(0.35, now);
     
-    // === Layer 1: Deep rumble (engine bass) ===
-    const rumbleOsc = ctx.createOscillator();
-    const rumbleGain = ctx.createGain();
-    rumbleOsc.type = 'sawtooth';
-    rumbleOsc.frequency.setValueAtTime(40, now);
-    rumbleOsc.frequency.linearRampToValueAtTime(80, now + 2);
-    rumbleOsc.frequency.linearRampToValueAtTime(60, now + duration);
-    rumbleGain.gain.setValueAtTime(0, now);
-    rumbleGain.gain.linearRampToValueAtTime(0.4, now + 0.5);
-    rumbleGain.gain.setValueAtTime(0.4, now + duration - 1);
-    rumbleGain.gain.linearRampToValueAtTime(0, now + duration);
-    rumbleOsc.connect(rumbleGain);
-    rumbleGain.connect(masterGain);
-    rumbleOsc.start(now);
-    rumbleOsc.stop(now + duration);
+    // === Layer 1: Time-bending doppler sweep ===
+    const dopplerOsc = ctx.createOscillator();
+    const dopplerGain = ctx.createGain();
+    const dopplerFilter = ctx.createBiquadFilter();
+    dopplerOsc.type = 'sawtooth';
+    // Dramatic frequency sweep - like time stretching
+    dopplerOsc.frequency.setValueAtTime(80, now);
+    dopplerOsc.frequency.exponentialRampToValueAtTime(20, now + 0.5); // Drop down
+    dopplerOsc.frequency.exponentialRampToValueAtTime(400, now + 2); // Surge up
+    dopplerOsc.frequency.exponentialRampToValueAtTime(60, now + 4); // Slow down
+    dopplerOsc.frequency.exponentialRampToValueAtTime(300, now + 5.5);
+    dopplerOsc.frequency.exponentialRampToValueAtTime(40, now + duration);
+    dopplerFilter.type = 'lowpass';
+    dopplerFilter.frequency.setValueAtTime(200, now);
+    dopplerFilter.frequency.linearRampToValueAtTime(2000, now + 2);
+    dopplerFilter.frequency.linearRampToValueAtTime(400, now + duration);
+    dopplerFilter.Q.value = 8;
+    dopplerGain.gain.setValueAtTime(0, now);
+    dopplerGain.gain.linearRampToValueAtTime(0.5, now + 0.3);
+    dopplerGain.gain.setValueAtTime(0.4, now + duration - 1);
+    dopplerGain.gain.linearRampToValueAtTime(0, now + duration);
+    dopplerOsc.connect(dopplerFilter);
+    dopplerFilter.connect(dopplerGain);
+    dopplerGain.connect(masterGain);
+    dopplerOsc.start(now);
+    dopplerOsc.stop(now + duration);
     
-    // === Layer 2: Warp whoosh (rising pitch) ===
-    const whooshOsc = ctx.createOscillator();
-    const whooshGain = ctx.createGain();
-    const whooshFilter = ctx.createBiquadFilter();
-    whooshOsc.type = 'sawtooth';
-    whooshOsc.frequency.setValueAtTime(100, now);
-    whooshOsc.frequency.exponentialRampToValueAtTime(800, now + 2);
-    whooshOsc.frequency.exponentialRampToValueAtTime(200, now + duration);
-    whooshFilter.type = 'lowpass';
-    whooshFilter.frequency.setValueAtTime(500, now);
-    whooshFilter.frequency.linearRampToValueAtTime(2000, now + 2);
-    whooshFilter.frequency.linearRampToValueAtTime(800, now + duration);
-    whooshGain.gain.setValueAtTime(0, now);
-    whooshGain.gain.linearRampToValueAtTime(0.15, now + 1);
-    whooshGain.gain.setValueAtTime(0.15, now + duration - 1.5);
-    whooshGain.gain.linearRampToValueAtTime(0, now + duration);
-    whooshOsc.connect(whooshFilter);
-    whooshFilter.connect(whooshGain);
-    whooshGain.connect(masterGain);
-    whooshOsc.start(now);
-    whooshOsc.stop(now + duration);
+    // === Layer 2: Reality-warping wobble (pitch bending) ===
+    const warpOsc = ctx.createOscillator();
+    const warpGain = ctx.createGain();
+    const warpLFO = ctx.createOscillator();
+    const warpLFOGain = ctx.createGain();
+    warpOsc.type = 'sine';
+    warpOsc.frequency.setValueAtTime(120, now);
+    // LFO creates the "wobbling reality" effect
+    warpLFO.type = 'sine';
+    warpLFO.frequency.setValueAtTime(0.5, now);
+    warpLFO.frequency.linearRampToValueAtTime(8, now + 2); // Speed up wobble
+    warpLFO.frequency.linearRampToValueAtTime(15, now + 4); // Intense warping
+    warpLFO.frequency.linearRampToValueAtTime(3, now + duration); // Slow down
+    warpLFOGain.gain.setValueAtTime(30, now);
+    warpLFOGain.gain.linearRampToValueAtTime(80, now + 3); // More extreme pitch bend
+    warpLFOGain.gain.linearRampToValueAtTime(20, now + duration);
+    warpLFO.connect(warpLFOGain);
+    warpLFOGain.connect(warpOsc.frequency);
+    warpGain.gain.setValueAtTime(0, now);
+    warpGain.gain.linearRampToValueAtTime(0.25, now + 1);
+    warpGain.gain.setValueAtTime(0.25, now + duration - 1.5);
+    warpGain.gain.linearRampToValueAtTime(0, now + duration);
+    warpOsc.connect(warpGain);
+    warpGain.connect(masterGain);
+    warpOsc.start(now);
+    warpLFO.start(now);
+    warpOsc.stop(now + duration);
+    warpLFO.stop(now + duration);
     
-    // === Layer 3: High-frequency shimmer (stars passing) ===
-    const shimmerOsc = ctx.createOscillator();
-    const shimmerGain = ctx.createGain();
-    shimmerOsc.type = 'sine';
-    shimmerOsc.frequency.setValueAtTime(2000, now);
-    shimmerOsc.frequency.linearRampToValueAtTime(4000, now + 2);
-    shimmerOsc.frequency.linearRampToValueAtTime(1500, now + duration);
-    shimmerGain.gain.setValueAtTime(0, now);
-    shimmerGain.gain.linearRampToValueAtTime(0.05, now + 2);
-    shimmerGain.gain.setValueAtTime(0.05, now + duration - 1);
-    shimmerGain.gain.linearRampToValueAtTime(0, now + duration);
-    shimmerOsc.connect(shimmerGain);
-    shimmerGain.connect(masterGain);
-    shimmerOsc.start(now);
-    shimmerOsc.stop(now + duration);
+    // === Layer 3: Space-time tearing (harsh distorted sweep) ===
+    const tearOsc = ctx.createOscillator();
+    const tearGain = ctx.createGain();
+    const tearDistortion = ctx.createWaveShaper();
+    const tearFilter = ctx.createBiquadFilter();
+    tearOsc.type = 'square';
+    tearOsc.frequency.setValueAtTime(50, now);
+    tearOsc.frequency.exponentialRampToValueAtTime(200, now + 1.5);
+    tearOsc.frequency.exponentialRampToValueAtTime(30, now + 3);
+    tearOsc.frequency.exponentialRampToValueAtTime(150, now + 5);
+    tearOsc.frequency.exponentialRampToValueAtTime(25, now + duration);
+    // Distortion curve for that "tearing" sound
+    const curve = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+        const x = (i - 128) / 128;
+        curve[i] = Math.tanh(x * 3);
+    }
+    tearDistortion.curve = curve;
+    tearFilter.type = 'bandpass';
+    tearFilter.frequency.setValueAtTime(300, now);
+    tearFilter.frequency.linearRampToValueAtTime(1200, now + 2);
+    tearFilter.frequency.linearRampToValueAtTime(400, now + duration);
+    tearFilter.Q.value = 2;
+    tearGain.gain.setValueAtTime(0, now);
+    tearGain.gain.linearRampToValueAtTime(0.15, now + 0.5);
+    tearGain.gain.setValueAtTime(0.12, now + duration - 1);
+    tearGain.gain.linearRampToValueAtTime(0, now + duration);
+    tearOsc.connect(tearDistortion);
+    tearDistortion.connect(tearFilter);
+    tearFilter.connect(tearGain);
+    tearGain.connect(masterGain);
+    tearOsc.start(now);
+    tearOsc.stop(now + duration);
     
-    // === Layer 4: White noise for "space wind" effect ===
-    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
+    // === Layer 4: Dimensional resonance (eerie harmonics) ===
+    const resFreqs = [220, 330, 440, 550];
+    resFreqs.forEach((freq, i) => {
+        const resOsc = ctx.createOscillator();
+        const resGain = ctx.createGain();
+        const resPan = ctx.createStereoPanner();
+        resOsc.type = 'sine';
+        resOsc.frequency.setValueAtTime(freq, now);
+        // Each harmonic bends differently
+        resOsc.frequency.linearRampToValueAtTime(freq * 0.7, now + 2);
+        resOsc.frequency.linearRampToValueAtTime(freq * 1.3, now + 4);
+        resOsc.frequency.linearRampToValueAtTime(freq * 0.9, now + duration);
+        // Pan each harmonic differently for spatial effect
+        resPan.pan.setValueAtTime((i - 1.5) / 2, now);
+        resPan.pan.linearRampToValueAtTime((1.5 - i) / 2, now + duration);
+        resGain.gain.setValueAtTime(0, now);
+        resGain.gain.linearRampToValueAtTime(0.06, now + 1.5);
+        resGain.gain.setValueAtTime(0.05, now + duration - 2);
+        resGain.gain.linearRampToValueAtTime(0, now + duration);
+        resOsc.connect(resGain);
+        resGain.connect(resPan);
+        resPan.connect(masterGain);
+        resOsc.start(now);
+        resOsc.stop(now + duration);
+    });
+    
+    // === Layer 5: Gravity well suction (descending boom) ===
+    const boomOsc = ctx.createOscillator();
+    const boomGain = ctx.createGain();
+    boomOsc.type = 'sine';
+    boomOsc.frequency.setValueAtTime(150, now);
+    boomOsc.frequency.exponentialRampToValueAtTime(20, now + 2); // Sucked into warp
+    boomOsc.frequency.setValueAtTime(20, now + 2);
+    boomOsc.frequency.exponentialRampToValueAtTime(100, now + 5); // Emerging
+    boomOsc.frequency.exponentialRampToValueAtTime(30, now + duration);
+    boomGain.gain.setValueAtTime(0.5, now);
+    boomGain.gain.exponentialRampToValueAtTime(0.1, now + 2);
+    boomGain.gain.linearRampToValueAtTime(0.3, now + 5);
+    boomGain.gain.linearRampToValueAtTime(0, now + duration);
+    boomOsc.connect(boomGain);
+    boomGain.connect(masterGain);
+    boomOsc.start(now);
+    boomOsc.stop(now + duration);
+    
+    // === Layer 6: Temporal echoes (delayed fragments) ===
+    const echoDelay = ctx.createDelay(1);
+    const echoFeedback = ctx.createGain();
+    const echoFilter = ctx.createBiquadFilter();
+    const echoGain = ctx.createGain();
+    echoDelay.delayTime.setValueAtTime(0.3, now);
+    echoDelay.delayTime.linearRampToValueAtTime(0.1, now + 3);
+    echoDelay.delayTime.linearRampToValueAtTime(0.4, now + duration);
+    echoFeedback.gain.value = 0.4;
+    echoFilter.type = 'highpass';
+    echoFilter.frequency.value = 800;
+    echoGain.gain.setValueAtTime(0, now);
+    echoGain.gain.linearRampToValueAtTime(0.2, now + 1);
+    echoGain.gain.setValueAtTime(0.15, now + duration - 1);
+    echoGain.gain.linearRampToValueAtTime(0, now + duration);
+    // Create echo source
+    const echoSource = ctx.createOscillator();
+    echoSource.type = 'triangle';
+    echoSource.frequency.setValueAtTime(300, now);
+    echoSource.frequency.linearRampToValueAtTime(600, now + 2);
+    echoSource.frequency.linearRampToValueAtTime(200, now + duration);
+    echoSource.connect(echoDelay);
+    echoDelay.connect(echoFeedback);
+    echoFeedback.connect(echoFilter);
+    echoFilter.connect(echoDelay);
+    echoDelay.connect(echoGain);
+    echoGain.connect(masterGain);
+    echoSource.start(now);
+    echoSource.stop(now + duration);
+    
+    // === Layer 7: Void whispers (filtered noise bursts) ===
+    const noiseLength = ctx.sampleRate * duration;
+    const noiseBuffer = ctx.createBuffer(1, noiseLength, ctx.sampleRate);
     const noiseData = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < noiseData.length; i++) {
-        noiseData[i] = Math.random() * 2 - 1;
+    for (let i = 0; i < noiseLength; i++) {
+        // Modulated noise - creates "whisper" effect
+        const mod = Math.sin(i / ctx.sampleRate * Math.PI * 4) * 0.5 + 0.5;
+        noiseData[i] = (Math.random() * 2 - 1) * mod;
     }
     const noiseSource = ctx.createBufferSource();
     const noiseGain = ctx.createGain();
     const noiseFilter = ctx.createBiquadFilter();
     noiseSource.buffer = noiseBuffer;
     noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.setValueAtTime(1000, now);
-    noiseFilter.frequency.linearRampToValueAtTime(3000, now + 2);
-    noiseFilter.frequency.linearRampToValueAtTime(1500, now + duration);
-    noiseFilter.Q.value = 0.5;
+    noiseFilter.frequency.setValueAtTime(2000, now);
+    noiseFilter.frequency.linearRampToValueAtTime(500, now + 3);
+    noiseFilter.frequency.linearRampToValueAtTime(3000, now + 5);
+    noiseFilter.frequency.linearRampToValueAtTime(1000, now + duration);
+    noiseFilter.Q.value = 5;
     noiseGain.gain.setValueAtTime(0, now);
     noiseGain.gain.linearRampToValueAtTime(0.08, now + 1);
-    noiseGain.gain.setValueAtTime(0.08, now + duration - 1);
+    noiseGain.gain.setValueAtTime(0.06, now + duration - 1);
     noiseGain.gain.linearRampToValueAtTime(0, now + duration);
     noiseSource.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
     noiseGain.connect(masterGain);
     noiseSource.start(now);
     noiseSource.stop(now + duration);
-    
-    // === Layer 5: Pulsing hum (quantum drive) ===
-    const pulseOsc = ctx.createOscillator();
-    const pulseGain = ctx.createGain();
-    const pulseLFO = ctx.createOscillator();
-    const pulseLFOGain = ctx.createGain();
-    pulseOsc.type = 'triangle';
-    pulseOsc.frequency.setValueAtTime(150, now);
-    pulseLFO.type = 'sine';
-    pulseLFO.frequency.setValueAtTime(4, now);
-    pulseLFO.frequency.linearRampToValueAtTime(12, now + 2);
-    pulseLFO.frequency.linearRampToValueAtTime(6, now + duration);
-    pulseLFOGain.gain.value = 0.3;
-    pulseLFO.connect(pulseLFOGain);
-    pulseLFOGain.connect(pulseGain.gain);
-    pulseGain.gain.setValueAtTime(0.1, now);
-    pulseGain.gain.linearRampToValueAtTime(0.2, now + 2);
-    pulseGain.gain.setValueAtTime(0.2, now + duration - 1);
-    pulseGain.gain.linearRampToValueAtTime(0, now + duration);
-    pulseOsc.connect(pulseGain);
-    pulseGain.connect(masterGain);
-    pulseOsc.start(now);
-    pulseLFO.start(now);
-    pulseOsc.stop(now + duration);
-    pulseLFO.stop(now + duration);
     
     // Reset flag after sound ends
     setTimeout(() => {
