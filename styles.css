@@ -396,6 +396,8 @@ html, body {
     z-index: 50;
     cursor: pointer;
     transition: transform 0.3s ease;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
 }
 
 .sun:hover {
@@ -468,6 +470,8 @@ html, body {
     pointer-events: all;
     transition: transform 0.25s ease, filter 0.25s ease;
     transform: translate(-50%, -50%);
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
 }
 
 .planet:hover {
@@ -1513,6 +1517,8 @@ html, body {
     z-index: 50;
     cursor: pointer;
     transition: transform 0.3s ease;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
 }
 
 .trappist-star:hover {
@@ -1728,6 +1734,8 @@ html, body {
     border-radius: 50%;
     overflow: hidden;
     z-index: 50;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
 }
 
 .ac-star:hover {
@@ -1861,6 +1869,8 @@ html, body {
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.3s ease;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
 }
 
 .ac-planet:hover {
