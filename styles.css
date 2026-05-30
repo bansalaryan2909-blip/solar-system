@@ -70,14 +70,46 @@ html, body {
     flex-wrap: wrap;
 }
 
+/* Card flowing aura animation */
+@keyframes cardFlowingAura {
+    0% {
+        box-shadow: 
+            0 5px 30px rgba(0, 20, 60, 0.3),
+            0 0 20px rgba(200, 50, 100, 0.15),
+            0 0 40px rgba(150, 50, 200, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    33% {
+        box-shadow: 
+            0 5px 30px rgba(0, 20, 60, 0.3),
+            0 0 25px rgba(180, 50, 180, 0.18),
+            0 0 50px rgba(200, 50, 150, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    66% {
+        box-shadow: 
+            0 5px 30px rgba(0, 20, 60, 0.3),
+            0 0 22px rgba(150, 50, 200, 0.15),
+            0 0 45px rgba(200, 50, 120, 0.09),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    100% {
+        box-shadow: 
+            0 5px 30px rgba(0, 20, 60, 0.3),
+            0 0 20px rgba(200, 50, 100, 0.15),
+            0 0 40px rgba(150, 50, 200, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+}
+
 .system-card {
     position: relative;
     width: 320px;
     background: linear-gradient(145deg, 
-        rgba(15, 25, 50, 0.7) 0%, 
-        rgba(20, 35, 65, 0.6) 50%,
-        rgba(15, 25, 50, 0.7) 100%);
-    border: 1px solid rgba(100, 150, 220, 0.2);
+        rgba(25, 18, 35, 0.8) 0%, 
+        rgba(30, 22, 45, 0.7) 50%,
+        rgba(25, 18, 35, 0.8) 100%);
+    border: 1px solid rgba(200, 100, 180, 0.2);
     overflow: hidden;
     cursor: pointer;
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -91,9 +123,7 @@ html, body {
         15px 100%, 
         0 calc(100% - 15px)
     );
-    box-shadow: 
-        0 5px 30px rgba(0, 20, 60, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    animation: cardFlowingAura 4s ease-in-out infinite;
 }
 
 /* Corner decorations */
@@ -104,8 +134,8 @@ html, body {
     left: 5px;
     width: 20px;
     height: 20px;
-    border-left: 2px solid rgba(100, 180, 255, 0.3);
-    border-top: 2px solid rgba(100, 180, 255, 0.3);
+    border-left: 2px solid rgba(255, 120, 200, 0.35);
+    border-top: 2px solid rgba(200, 100, 255, 0.35);
     z-index: 5;
     transition: all 0.4s ease;
 }
@@ -117,25 +147,26 @@ html, body {
     right: 5px;
     width: 20px;
     height: 20px;
-    border-right: 2px solid rgba(100, 180, 255, 0.3);
-    border-bottom: 2px solid rgba(100, 180, 255, 0.3);
+    border-right: 2px solid rgba(200, 100, 255, 0.35);
+    border-bottom: 2px solid rgba(255, 120, 200, 0.35);
     z-index: 5;
     transition: all 0.4s ease;
 }
 
 .system-card:hover {
     transform: translateY(-10px) scale(1.02);
-    border-color: rgba(120, 180, 255, 0.5);
+    border-color: rgba(255, 120, 200, 0.5);
     box-shadow: 
-        0 25px 70px rgba(0, 30, 80, 0.5), 
-        0 0 50px rgba(80, 140, 220, 0.15),
-        0 0 100px rgba(80, 140, 220, 0.05),
+        0 25px 70px rgba(30, 10, 40, 0.5), 
+        0 0 40px rgba(255, 80, 150, 0.25),
+        0 0 80px rgba(180, 50, 255, 0.15),
+        0 0 120px rgba(255, 50, 180, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .system-card:hover::before,
 .system-card:hover::after {
-    border-color: rgba(150, 200, 255, 0.6);
+    border-color: rgba(255, 150, 220, 0.7);
     width: 25px;
     height: 25px;
 }
@@ -686,15 +717,36 @@ html, body {
 }
 
 /* ===== BACK BUTTON ===== */
+@keyframes flowingAuraSmall {
+    0% {
+        box-shadow: 
+            0 0 10px rgba(200, 50, 100, 0.35),
+            0 0 20px rgba(150, 50, 200, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    50% {
+        box-shadow: 
+            0 0 12px rgba(150, 50, 200, 0.35),
+            0 0 25px rgba(200, 50, 150, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+    100% {
+        box-shadow: 
+            0 0 10px rgba(200, 50, 100, 0.35),
+            0 0 20px rgba(150, 50, 200, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+}
+
 .btn-back {
     position: absolute;
     top: 25px; left: 30px;
     z-index: 60;
     background: linear-gradient(135deg, 
-        rgba(15, 25, 50, 0.95) 0%, 
-        rgba(25, 40, 70, 0.9) 100%);
-    border: 1px solid rgba(100, 150, 220, 0.25);
-    color: rgba(150, 190, 255, 0.8);
+        rgba(30, 20, 40, 0.95) 0%, 
+        rgba(40, 30, 55, 0.9) 100%);
+    border: 1px solid rgba(200, 100, 180, 0.25);
+    color: rgba(220, 180, 255, 0.85);
     font-family: 'Orbitron', sans-serif;
     font-size: 0.55rem;
     letter-spacing: 3px;
@@ -706,23 +758,22 @@ html, body {
     gap: 10px;
     text-transform: uppercase;
     clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-    box-shadow: 
-        0 0 10px rgba(80, 130, 200, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    animation: flowingAuraSmall 3s ease-in-out infinite;
 }
 
 .btn-back:hover {
     background: linear-gradient(135deg, 
-        rgba(25, 45, 90, 0.95) 0%, 
-        rgba(40, 70, 120, 0.9) 100%);
-    color: rgba(200, 230, 255, 1);
-    border-color: rgba(120, 180, 255, 0.4);
+        rgba(50, 30, 60, 0.98) 0%, 
+        rgba(65, 40, 80, 0.95) 100%);
+    color: rgba(255, 220, 255, 1);
+    border-color: rgba(255, 120, 200, 0.4);
     box-shadow: 
-        0 0 20px rgba(100, 150, 255, 0.2),
-        0 0 40px rgba(100, 150, 255, 0.05),
+        0 0 20px rgba(255, 80, 150, 0.4),
+        0 0 40px rgba(180, 50, 255, 0.2),
+        0 0 60px rgba(255, 50, 180, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
     transform: translateX(-3px);
-    text-shadow: 0 0 8px rgba(150, 200, 255, 0.4);
+    text-shadow: 0 0 10px rgba(255, 150, 255, 0.5);
 }
 
 .btn-icon {
@@ -945,18 +996,97 @@ html, body {
     justify-content: center;
 }
 
+/* Flowing aura keyframes */
+@keyframes flowingAura {
+    0% {
+        box-shadow: 
+            0 0 15px rgba(200, 50, 100, 0.4),
+            0 0 30px rgba(150, 50, 200, 0.2),
+            0 0 45px rgba(200, 50, 150, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    25% {
+        box-shadow: 
+            0 0 20px rgba(180, 50, 180, 0.45),
+            0 0 40px rgba(200, 50, 120, 0.25),
+            0 0 60px rgba(150, 50, 200, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 18px rgba(150, 50, 200, 0.4),
+            0 0 35px rgba(200, 50, 150, 0.22),
+            0 0 55px rgba(180, 50, 180, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    75% {
+        box-shadow: 
+            0 0 22px rgba(200, 50, 130, 0.45),
+            0 0 42px rgba(150, 50, 200, 0.25),
+            0 0 65px rgba(200, 50, 100, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        box-shadow: 
+            0 0 15px rgba(200, 50, 100, 0.4),
+            0 0 30px rgba(150, 50, 200, 0.2),
+            0 0 45px rgba(200, 50, 150, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+}
+
+@keyframes flowingAuraHover {
+    0% {
+        box-shadow: 
+            0 0 25px rgba(255, 50, 100, 0.6),
+            0 0 50px rgba(180, 50, 255, 0.35),
+            0 0 80px rgba(255, 50, 180, 0.2),
+            0 0 120px rgba(180, 50, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    33% {
+        box-shadow: 
+            0 0 30px rgba(200, 50, 255, 0.6),
+            0 0 60px rgba(255, 50, 150, 0.35),
+            0 0 90px rgba(180, 50, 255, 0.2),
+            0 0 130px rgba(255, 50, 100, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    66% {
+        box-shadow: 
+            0 0 28px rgba(255, 50, 180, 0.6),
+            0 0 55px rgba(200, 50, 255, 0.35),
+            0 0 85px rgba(255, 50, 120, 0.2),
+            0 0 125px rgba(180, 50, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        box-shadow: 
+            0 0 25px rgba(255, 50, 100, 0.6),
+            0 0 50px rgba(180, 50, 255, 0.35),
+            0 0 80px rgba(255, 50, 180, 0.2),
+            0 0 120px rgba(180, 50, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+}
+
 .btn-action {
     position: relative;
     background: linear-gradient(135deg, 
-        rgba(20, 30, 60, 0.9) 0%, 
-        rgba(30, 50, 90, 0.8) 50%, 
-        rgba(20, 35, 70, 0.9) 100%);
-    border: 1px solid transparent;
-    border-image: linear-gradient(135deg, 
-        rgba(100, 150, 255, 0.4), 
-        rgba(150, 100, 255, 0.3), 
-        rgba(100, 200, 255, 0.4)) 1;
-    color: rgba(180, 210, 255, 0.9);
+        rgba(30, 20, 40, 0.95) 0%, 
+        rgba(40, 25, 60, 0.9) 50%, 
+        rgba(30, 20, 45, 0.95) 100%);
+    border: 1px solid rgba(200, 100, 180, 0.3);
+    color: rgba(220, 180, 255, 0.95);
     font-family: 'Orbitron', sans-serif;
     font-size: 0.55rem;
     letter-spacing: 3px;
@@ -967,7 +1097,7 @@ html, body {
     align-items: center;
     gap: 12px;
     text-transform: uppercase;
-    overflow: hidden;
+    overflow: visible;
     clip-path: polygon(
         0 0, 
         calc(100% - 12px) 0, 
@@ -976,10 +1106,7 @@ html, body {
         12px 100%, 
         0 calc(100% - 12px)
     );
-    box-shadow: 
-        0 0 15px rgba(80, 120, 200, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    animation: flowingAura 3s ease-in-out infinite;
 }
 
 /* Galactic glow effect */
@@ -992,7 +1119,8 @@ html, body {
     height: 100%;
     background: linear-gradient(90deg, 
         transparent, 
-        rgba(150, 180, 255, 0.15), 
+        rgba(255, 100, 200, 0.2), 
+        rgba(180, 100, 255, 0.15),
         transparent);
     transition: left 0.6s ease;
 }
@@ -1009,42 +1137,37 @@ html, body {
     right: 2px;
     width: 8px;
     height: 8px;
-    border-top: 1px solid rgba(150, 200, 255, 0.5);
-    border-right: 1px solid rgba(150, 200, 255, 0.5);
+    border-top: 1px solid rgba(255, 150, 200, 0.6);
+    border-right: 1px solid rgba(200, 150, 255, 0.6);
 }
 
 .btn-action:hover {
     background: linear-gradient(135deg, 
-        rgba(30, 50, 100, 0.95) 0%, 
-        rgba(50, 80, 140, 0.9) 50%, 
-        rgba(30, 60, 120, 0.95) 100%);
-    color: rgba(220, 240, 255, 1);
-    box-shadow: 
-        0 0 25px rgba(100, 150, 255, 0.3),
-        0 0 50px rgba(100, 150, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+        rgba(50, 25, 60, 0.98) 0%, 
+        rgba(70, 35, 90, 0.95) 50%, 
+        rgba(50, 30, 70, 0.98) 100%);
+    color: rgba(255, 220, 255, 1);
+    border-color: rgba(255, 120, 200, 0.5);
     transform: translateY(-2px);
-    text-shadow: 0 0 10px rgba(150, 200, 255, 0.5);
+    text-shadow: 0 0 15px rgba(255, 150, 255, 0.6);
+    animation: flowingAuraHover 2s ease-in-out infinite;
 }
 
 .btn-action:active {
     transform: translateY(0);
+    animation: none;
     box-shadow: 
-        0 0 15px rgba(100, 150, 255, 0.2),
+        0 0 20px rgba(200, 50, 150, 0.4),
         inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .btn-action-alt {
     background: linear-gradient(135deg, 
-        rgba(50, 30, 20, 0.9) 0%, 
-        rgba(80, 50, 30, 0.8) 50%, 
-        rgba(60, 35, 25, 0.9) 100%);
-    border-image: linear-gradient(135deg, 
-        rgba(255, 180, 100, 0.4), 
-        rgba(255, 150, 80, 0.3), 
-        rgba(255, 200, 120, 0.4)) 1;
-    color: rgba(255, 210, 160, 0.9);
+        rgba(40, 25, 30, 0.95) 0%, 
+        rgba(60, 35, 45, 0.9) 50%, 
+        rgba(45, 28, 35, 0.95) 100%);
+    border-color: rgba(255, 150, 120, 0.3);
+    color: rgba(255, 200, 180, 0.95);
 }
 
 .btn-action-alt::after {
@@ -1084,10 +1207,10 @@ html, body {
 .btn-nav {
     position: relative;
     background: linear-gradient(135deg, 
-        rgba(15, 25, 50, 0.9) 0%, 
-        rgba(25, 40, 75, 0.85) 100%);
-    border: 1px solid rgba(100, 150, 220, 0.2);
-    color: rgba(150, 190, 255, 0.75);
+        rgba(30, 20, 40, 0.9) 0%, 
+        rgba(40, 28, 55, 0.85) 100%);
+    border: 1px solid rgba(200, 100, 180, 0.2);
+    color: rgba(220, 180, 255, 0.8);
     font-family: 'Orbitron', sans-serif;
     font-size: 0.5rem;
     letter-spacing: 3px;
@@ -1099,8 +1222,8 @@ html, body {
     gap: 8px;
     text-transform: uppercase;
     clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-    box-shadow: 0 0 8px rgba(80, 130, 200, 0.08);
     overflow: hidden;
+    animation: flowingAuraSmall 3.5s ease-in-out infinite;
 }
 
 .btn-nav::before {
@@ -1110,7 +1233,7 @@ html, body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(150, 180, 255, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 100, 200, 0.15), rgba(180, 100, 255, 0.1), transparent);
     transition: left 0.5s ease;
 }
 
@@ -1120,28 +1243,29 @@ html, body {
 
 .btn-nav:hover {
     background: linear-gradient(135deg, 
-        rgba(25, 45, 85, 0.95) 0%, 
-        rgba(40, 65, 110, 0.9) 100%);
-    color: rgba(200, 230, 255, 1);
-    border-color: rgba(120, 180, 255, 0.35);
+        rgba(50, 30, 60, 0.95) 0%, 
+        rgba(65, 40, 80, 0.9) 100%);
+    color: rgba(255, 220, 255, 1);
+    border-color: rgba(255, 120, 200, 0.35);
     box-shadow: 
-        0 0 15px rgba(100, 150, 255, 0.15),
-        0 0 30px rgba(100, 150, 255, 0.05);
-    text-shadow: 0 0 6px rgba(150, 200, 255, 0.3);
+        0 0 18px rgba(255, 80, 150, 0.35),
+        0 0 35px rgba(180, 50, 255, 0.15);
+    text-shadow: 0 0 8px rgba(255, 150, 255, 0.4);
 }
 
 .btn-nav:disabled {
     opacity: 0.15;
     cursor: not-allowed;
+    animation: none;
     box-shadow: none;
 }
 
 .btn-nav:disabled:hover {
     background: linear-gradient(135deg, 
-        rgba(15, 25, 50, 0.9) 0%, 
-        rgba(25, 40, 75, 0.85) 100%);
-    color: rgba(150, 190, 255, 0.75);
-    border-color: rgba(100, 150, 220, 0.2);
+        rgba(30, 20, 40, 0.9) 0%, 
+        rgba(40, 28, 55, 0.85) 100%);
+    color: rgba(220, 180, 255, 0.8);
+    border-color: rgba(200, 100, 180, 0.2);
     transform: none;
     text-shadow: none;
 }
@@ -1149,9 +1273,9 @@ html, body {
 .moon-counter, .history-counter {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.55rem;
-    color: rgba(140, 180, 255, 0.35);
+    color: rgba(220, 150, 255, 0.4);
     letter-spacing: 3px;
-    text-shadow: 0 0 10px rgba(100, 150, 255, 0.1);
+    text-shadow: 0 0 10px rgba(200, 100, 255, 0.15);
 }
 
 /* ===== HISTORY VIEW ===== */
