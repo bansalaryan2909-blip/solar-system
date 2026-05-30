@@ -407,22 +407,30 @@ function initPanZoom() {
 function createStars(containerId) {
     const container = containerId ? document.getElementById(containerId) : document.getElementById('stars-container');
     if (!container) return;
-    const count = containerId ? 150 : 800;
+    // OPTIMIZED: Reduced star count for better performance
+    const count = containerId ? 80 : 400;
+    
+    // Use DocumentFragment for better performance
+    const fragment = document.createDocumentFragment();
+    
     for (let i = 0; i < count; i++) {
         const star = document.createElement('div');
         const isBright = Math.random() > 0.94;
         star.className = isBright ? 'star star-bright' : 'star';
         const size = isBright ? (Math.random() * 2.5 + 1.5) : (Math.random() * 1.5 + 0.3);
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.setProperty('--twinkle-duration', (Math.random() * 5 + 2) + 's');
-        star.style.setProperty('--twinkle-min', (Math.random() * 0.15 + 0.05).toString());
-        star.style.setProperty('--twinkle-max', (Math.random() * 0.4 + 0.55).toString());
-        star.style.animationDelay = (Math.random() * 8) + 's';
-        container.appendChild(star);
+        star.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            --twinkle-duration: ${Math.random() * 5 + 3}s;
+            --twinkle-min: ${Math.random() * 0.15 + 0.1};
+            --twinkle-max: ${Math.random() * 0.3 + 0.6};
+            animation-delay: ${Math.random() * 8}s;
+        `;
+        fragment.appendChild(star);
     }
+    container.appendChild(fragment);
 }
 
 function createNebulae() {
